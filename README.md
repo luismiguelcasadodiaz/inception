@@ -64,3 +64,5 @@ Bonus list:
 
 A Dockerfile must be written for each extra service. Thus, each service will run inside its container and will have, if necessary, its dedicated volume.
 
+
+ALpine config
