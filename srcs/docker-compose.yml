@@ -1,10 +1,20 @@
 name: inception
 
 services:
-	webserver:
-		command: echo "I'm running ${COMPOSE_PROJECT_NAME}/webserver"
-	contentserver:
-		command: echo "I'm running ${COMPOSE_PROJECT_NAME}/contentserver"
-	dbserver:
-		command: echo "I'm running ${COMPOSE_PROJECT_NAME}/webserver"
-	
+  webserver:
+    command: echo "I'm running ${COMPOSE_PROJECT_NAME}/webserver"
+    build:
+      context: ./webserver
+      dockerfile: dockerfile_webserver
+
+  contentserver:
+    command: echo "I'm running ${COMPOSE_PROJECT_NAME}/contentserver"
+    build:
+      context: ./contentserver
+      dockerfile: dockerfile_contentserver
+  dbserver:
+    command: echo "I'm running ${COMPOSE_PROJECT_NAME}/webserver"
+    build:
+      context: ./dbserver
+      dockerfile: dockerfile_dbserver
+
