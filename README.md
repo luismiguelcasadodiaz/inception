@@ -65,8 +65,53 @@ Bonus list:
 A Dockerfile must be written for each extra service. Thus, each service will run inside its container and will have, if necessary, its dedicated volume.
 
 
-ALpine config
+### Alpine config
+I have chosen Alpine Linux due to its small size. There is a version optimized for virtual systems. Alpine virtual with 66 MB. [alpine-virt-3.21.3-x86_64.iso](https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-virt-3.21.3-x86_64.iso)
+
+It is a version designed to run in memory. You need to pay some attention to executing the script `alpine-setup` and ensure you define a [sys] filesystem and format default partitions to create a persistent configuration that exists next boot.
+
+Include repositories from the community at setup. This allows us to install Docker and git later.
+Create a user aside of root
+
+apk add git
+
+
+$ssh-keygen -t ed25519 -C "one mail here"
+$ eval "$(ssh-agent -s)"
+> Agent pid 59566
+ssh-add ~/.ssh/id_ed25519
+
+I configured a github repository to backup all configuration files.
+apk add docker            // I installed version 27.3
+apk add docker-compose    // I installed version 2.31
+
+
+
+### docker compose
+Uses a docker-compose.yml file to configure my microservices ecosystem. I need to use version 3.8 of configuration syntax accordingly with m version of docker and docker compose
+
+Inception requires the configuration of 3 services
++ nginx
++ wordpress
++ mariadb
++ redis cache (bonus)
++ ftp server (bonus)
++ statis web (bonus)
++ adminer (bonus)
+
+ ```yml
+name: inception
+
+services: 
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: 
+      - "8080:80"
+ ```
 
 
 #### URLs read
+[Docke compatibility matrix](https://dockerpros.com/wiki/docker-compose-compatibility-matrix/)
 [Install Maria db on alpine linux](https://www.librebyte.net/en/data-base/how-to-install-mariadb-on-alpine-linux/)
