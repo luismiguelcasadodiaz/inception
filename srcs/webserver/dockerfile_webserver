@@ -1,0 +1,6 @@
+FROM alpine:3.21.3
+RUN apk add nginx
+COPY webserver_setup.sh /webserver_setup.sh
+RUN chmod +x /webserver_setup.sh && /webserver_setup.sh
+COPY index.html /www/index.html
+COPY nginx.conf /etc/nginx/nginx.conf

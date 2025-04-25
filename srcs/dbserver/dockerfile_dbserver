@@ -1,1 +1,5 @@
-FROM alpine:latest
+FROM alpine:3.21.3
+RUN apk add mariadb
+COPY dbserver_setup.sh /dbserver_setup.sh
+RUN chmod +x /dbserver_setup.sh && /dbserver_setup.sh
+EXPOSE 3306
