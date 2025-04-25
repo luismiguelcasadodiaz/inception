@@ -7,6 +7,8 @@ services:
     build:
       context: ./webserver
       dockerfile: dockerfile_webserver
+    ports:
+      - "8080:80"
 
   contentserver:
     command: echo "I'm running ${COMPOSE_PROJECT_NAME}/contentserver"
@@ -23,5 +25,11 @@ services:
     build:
       context: ./dbserver
       dockerfile: dockerfile_dbserver
-
+    volumes:
+      - ./db_data:/data  # Maps host folder to MariaDB data directory
+    ports:
+      - "3306:3306"
+networks:
+  inception_net:
+    driver: bridge
 

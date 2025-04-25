@@ -43,5 +43,5 @@ logs:
 
 # Eliminar contenedores y volúmenes
 clean:
-	docker image rm $(SERVICES)
+	docker image rm -f $(SERVICES)
 
