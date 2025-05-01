@@ -1,24 +1,25 @@
-# Inception: System Administration-related exercise.
+# Inception: System Administration-related exercise (version 3.2)
 
-This project aims to broaden my knowledge of system administration by using Docker.
-I will virtualize several Docker images, creating them inside a virtual machine.
-machine.
+This project aims to broaden your knowledge of system administration through the use
+of Docker technology. You will virtualize several Docker images by creating them in your
+new personal virtual machine.
 
 ### General guidelines
-• This project needs to be done on a **Virtual Machine**.
+• This project must be completed on a **Virtual Machine**.
 • All the files required for the configuration of your project must be placed in a srcs folder.
 • A Makefile is also required and must be located at the root of your directory. It must set up your entire application (i.e., it has to build the Docker images using docker-compose.yml).
 • This subject requires putting into practice concepts related to Docker usage.
 
 
-+ This project sets up a small infrastructure composed of different services under specific rules. The whole project has to be done in a virtual machine.
-+ You have to use **docker compose**.
++ This project involves setting up a small infrastructure composed of different services un-
+der specific rules.
++ You must use **docker compose**.
 + Each Docker image must have the **same name as its corresponding service**.
 + Each service has to run in a **dedicated container**.
-+ For performance matters, the containers must be built either from the penultimate stable version of **Alpine or from Debian**. The choice is yours.
++ For performance reasons, the containers must be built either from the penultimate stable version of **Alpine or from Debian**. The choice is yours.
 + You also have to **write your own Dockerfiles**, one per service. The Dockerfiles must be called in your docker-compose.yml by your Makefile.
-+ It means you have to **build yourself the Docker images** of your project. It is then **forbidden to pull ready-made Docker images**, as well as using services such as DockerHub (Alpine/Debian being excluded from this rule).
-+ Your containers have to restart in case of a crash.
++ This means you must **build the Docker images** for your project yourself. It is then **forbidden to pull ready-made Docker images**, as well as using services such as DockerHub (Alpine/Debian being excluded from this rule).
++ Your containers must restart automatically in case of a crash.
 + Using network: host or --link or links: is **forbidden**.
 + The **network line must be present in your docker-compose.yml** file.
 + Your containers mustn’t be started with a command running an infinite loop. Thus, this also applies to any command used as an entry point, or used in entry point scripts. The following are a few prohibited hacky patches: tail -f, bash, sleep infinity, while true.
@@ -33,7 +34,7 @@ You then have to set up:
 
 • A Docker container that contains WordPress + php-fpm (it must be installed and configured) only without nginx.
 
-• A Docker container that contains **MariaDB** only without nginx.
+• A Docker container that contains only **MariaDB**,without nginx.
 
 • A volume that contains your WordPress database.
 
@@ -48,6 +49,13 @@ so forth).
 
 
 ![image](https://github.com/user-attachments/assets/5b64cdf1-1511-43ca-9172-f005b40919fb)
+
+Expected directory structure
+![image](https://github.com/user-attachments/assets/7f97bd32-ac7b-4727-b5e7-0bc3e7009179)
+
+For obvious security reasons, any credentials, API keys, passwords,etc., must be saved locally in various ways / files and ignored by git. Publicly stored credentials will lead you directly to a failure of the project.
+
+You can store your variables (as a domain name) in an environment variable file like .env
 
 ### Bonus Part
 
