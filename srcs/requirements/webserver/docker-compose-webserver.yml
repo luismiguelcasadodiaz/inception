@@ -1,0 +1,10 @@
+services:
+
+  webserver:
+    command: echo "I'm running ${COMPOSE_PROJECT_NAME}/webserver"
+    image: webserver # EL nombre de la imagen debe coincidir con el nombre del servicio
+    build:
+      context: ../webserver
+      dockerfile: dockerfile_webserver
+    ports:
+      - "8080:80"

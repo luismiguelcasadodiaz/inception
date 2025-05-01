@@ -1,0 +1,10 @@
+services:
+  contentserver:
+    command: echo "I'm running ${COMPOSE_PROJECT_NAME}/contentserver"
+    image: contentserver # EL nombre de la imagen debe coincidir con el nombre del servicio
+    build:
+      context: ../contentserver
+      dockerfile: dockerfile_contentserver
+    depends_on:
+      dbserver:
+        condition: service_healthy  # Ensures database server is actually ready

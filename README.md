@@ -93,6 +93,23 @@ I configured a github repository to backup all configuration files.
 apk add docker            // I installed version 27.3
 apk add docker-compose    // I installed version 2.31
 
+Subject request me to write a Makefile, so i need make
+apk add make
+
+##### ssh-agent start at boot time
+In previous section, i started ssh-agent manually to add the private key to connect wiht Git Hub.
+I need ssh-agent to be active for "luicasad" user. I configure inception project wiht this user. I syncronize inception repository from Git Hub.
+I created a ~/.profile file to execute at login time
+
+```ash
+echo "Logged in as: $(whoami)"
+echo "Hostname    : $(hostname)"
+echo "kernel      : $(uname -r)"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/alpine_inception
+
+```
+
 
 
 ### docker compose
@@ -119,9 +136,26 @@ services:
       - "8080:80"
  ```
 
+##### real time file update inside your container when you edit it in host.
+
+There is a `watch` instruction in compose language to update a file inside a container
+
+```yml
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /code
+```
 
 #### URLs read
-[Alpine Linux setup](https://wiki.alpinelinux.org/wiki/Installation#Installation_Handbook)
-[Docker reference](https://docs.docker.com/reference/)
-[Docker compatibility matrix](https://dockerpros.com/wiki/docker-compose-compatibility-matrix/)
-[Install Maria db on alpine linux](https://www.librebyte.net/en/data-base/how-to-install-mariadb-on-alpine-linux/)
++ [Alpine Linux setup](https://wiki.alpinelinux.org/wiki/Installation#Installation_Handbook)
+
++ [Docker reference](https://docs.docker.com/reference/)
+
++ [Docker compatibility matrix](https://dockerpros.com/wiki/docker-compose-compatibility-matrix/)
+
++ [Install Maria db on alpine linux](https://www.librebyte.net/en/data-base/how-to-install-mariadb-on-alpine-linux/)
+
++ [Services in Alpine-linux-containers](https://medium.com/@mfranzon/how-to-create-and-manage-a-service-in-an-alpine-linux-container-93a97d5dad80)
+

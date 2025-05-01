@@ -1,34 +1,39 @@
 name: inception
+include:
+  - ./requirements/dbserver/docker-compose-dbserver.yml
+  - ./requirements/webserver/docker-compose-webserver.yml
+  - ./requirements/contentserver/docker-compose-contentserver.yml
 
-services:
-  webserver:
-    command: echo "I'm running ${COMPOSE_PROJECT_NAME}/webserver"
-    image: webserver # EL nombre de la imagen debe coincidir con el nombre del servicio
-    build:
-      context: ./webserver
-      dockerfile: dockerfile_webserver
-    ports:
-      - "8080:80"
+# services:
 
-  contentserver:
-    command: echo "I'm running ${COMPOSE_PROJECT_NAME}/contentserver"
-    image: contentserver # EL nombre de la imagen debe coincidir con el nombre del servicio
-    build:
-      context: ./contentserver
-      dockerfile: dockerfile_contentserver
-    depends_on:
-      dbserver:
-        condition: service_healthy  # Ensures database server is actually ready
-  dbserver:
-    command: echo "I'm running ${COMPOSE_PROJECT_NAME}/webserver"
-    image: dbserver # EL nombre de la imagen debe coincidir con el nombre del servicio
-    build:
-      context: ./dbserver
-      dockerfile: dockerfile_dbserver
-    volumes:
-      - ./db_data:/data  # Maps host folder to MariaDB data directory
-    ports:
-      - "3306:3306"
+#   webserver:
+#     command: echo "I'm running ${COMPOSE_PROJECT_NAME}/webserver"
+#     image: webserver # EL nombre de la imagen debe coincidir con el nombre del servicio
+#     build:
+#       context: ./requirements/webserver
+#       dockerfile: dockerfile_webserver
+#     ports:
+#       - "8080:80"
+
+  # contentserver:
+  #   command: echo "I'm running ${COMPOSE_PROJECT_NAME}/contentserver"
+  #   image: contentserver # EL nombre de la imagen debe coincidir con el nombre del servicio
+  #   build:
+  #     context: ./requirements/contentserver
+  #     dockerfile: dockerfile_contentserver
+  #   depends_on:
+  #     dbserver:
+  #       condition: service_healthy  # Ensures database server is actually ready
+#  dbserver:
+#    command: echo "I'm running ${COMPOSE_PROJECT_NAME}/webserver"
+#    image: dbserver # EL nombre de la imagen debe coincidir con el nombre del servicio
+#    build:
+#      context: ./requirements/dbserver
+#      dockerfile: dockerfile_dbserver
+#    volumes:
+#      - ./requirements/dbserver/db_data:/data  # Maps host folder to MariaDB data directory
+#    ports:
+#      - "3306:3306"
 networks:
   inception_net:
     driver: bridge
