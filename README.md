@@ -72,6 +72,15 @@ Bonus list:
 
 A Dockerfile must be written for each extra service. Thus, each service will run inside its container and will have, if necessary, its dedicated volume.
 
+### Virtual Machine
+I use Virtual box.
+
+VirtualBox from Oracle is a free and open-source virtualization software package that allows me to run multiple Alpine Linux, as guest operating systems, on my linux Ubuntu host operating system.
+
+Two considerations:
++ Network configuration:Bridge. I want the virtual machine gets a IP in the same net that my host Machine
++ Shared folder: I prefer edit all configuration files outside the virtual machine. I work on a folder in the host machine that it is automatically mounted in the virtual machine at boot time (edited /etc/fstab)
+
 
 ### Alpine config
 I have chosen Alpine Linux due to its small size. There is a version optimized for virtual systems. Alpine virtual with 66 MB. [alpine-virt-3.21.3-x86_64.iso](https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-virt-3.21.3-x86_64.iso)
@@ -158,4 +167,6 @@ There is a `watch` instruction in compose language to update a file inside a con
 + [Install Maria db on alpine linux](https://www.librebyte.net/en/data-base/how-to-install-mariadb-on-alpine-linux/)
 
 + [Services in Alpine-linux-containers](https://medium.com/@mfranzon/how-to-create-and-manage-a-service-in-an-alpine-linux-container-93a97d5dad80)
++ [Docekr maria db  video](https://event.on24.com/eventRegistration/console/apollox/mainEvent?&eventid=1843295&sessionid=1&username=&partnerref=&format=fhvideo1&mobile=&flashsupportedmobiledevice=&helpcenter=&key=B28CF0CD422B7C4BDA4B2DD12C498B6B&newConsole=true&nxChe=true&newTabCon=true&consoleEarEventConsole=true&consoleEarCloudApi=false&text_language_id=en&playerwidth=748&playerheight=526&eventuserid=752113287&contenttype=A&mediametricsessionid=645792338&mediametricid=2595708&usercd=752113287&mode=launch)
 
++ [MariaDb Dockerfile Template](https://github.com/mariadb-corporation/mariadb-server-docker/blob/master/Dockerfile.template)
