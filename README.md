@@ -170,3 +170,4 @@ There is a `watch` instruction in compose language to update a file inside a con
 + [Docekr maria db  video](https://event.on24.com/eventRegistration/console/apollox/mainEvent?&eventid=1843295&sessionid=1&username=&partnerref=&format=fhvideo1&mobile=&flashsupportedmobiledevice=&helpcenter=&key=B28CF0CD422B7C4BDA4B2DD12C498B6B&newConsole=true&nxChe=true&newTabCon=true&consoleEarEventConsole=true&consoleEarCloudApi=false&text_language_id=en&playerwidth=748&playerheight=526&eventuserid=752113287&contenttype=A&mediametricsessionid=645792338&mediametricid=2595708&usercd=752113287&mode=launch)
 
 + [MariaDb Dockerfile Template](https://github.com/mariadb-corporation/mariadb-server-docker/blob/master/Dockerfile.template)
++ [Docker Labels Schema](http://label-schema.org/rc1/#:~:text=of%20the%20code.-,schema%2Dversion,docker.cmd)

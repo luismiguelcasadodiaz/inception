@@ -17,14 +17,16 @@ FROM alpine:3.21.3
 # at the time of the failure.
 
 # --no-cache prevents apk from saving the list of available packages brought by apk update
-# saving image size.
+# saving image size in 2.377 MB
+# -rw-r--r--    1 root     root      475.6K May  8 08:36 APKINDEX.36c0efc6.tar.gz
+# -rw-r--r--    1 root     root        1.9M May  8 08:36 APKINDEX.e33e93f4.tar.gz
 
 # apk add verifies package signatures
 # apk add also mariadb-client to iteract wiht the server during 
 # configuration
 # apk creates group and user "mysql' wiht GID(101) and UID(100)
 # user mysql home directory is /var/lib/mysql with ownership mysql:mysql
-# user mysql(100) shell is /sbin/nologin, to avoid logins wiht this user. 
+# user mysql(100) shell is /sbin/nologin, to avoid logins wiht this user.
 
 RUN set -ex && \
     apk update && \
