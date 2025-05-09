@@ -7,9 +7,16 @@ LABEL org.label-schema.url="[https://github.com/luismiguelcasadodiaz/inception]"
 LABEL org. label-schema.date="May 2025"
 
 
-RUN apk add --no-cache mariadb mariadb-client && mariadb-install-db --user=mysql --datadir=/var/lib/mysql
-#USER mysql
-CMD ["/bin/sh"]
+
+
+RUN apk add --no-cache mariadb mariadb-client
+VOLUME /var/lib/mysql
+COPY docker-entrypoint.sh /usr/local/sbin/docker-entrypoint.sh
+RUN chmod +x /usr/local/sbin/docker-entrypoint.sh
+
+USER mysql
+ENTRYPOINT ["/usr/local/sbin/docker-entrypoint.sh"]
+#CMD ["/bin/sh"]
 
 
 # -rw-r--r--    1 root     root      475.6K May  8 08:36 APKINDEX.36c0efc6.tar.gz
