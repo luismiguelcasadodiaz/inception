@@ -22,6 +22,12 @@ RUN apk apk add --no-cache mariadb mariadb-client
 |`root:x:0:0:root:/root:/bin/sh`<br>`bin:x:1:1:bin:/bin:/sbin/nologin`<br>`daemon:x:2:2:daemon:/sbin:/sbin/nologin`<br>`lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin`<br>`sync:x:5:0:sync:/sbin:/bin/sync`<br>`shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown`<br>`halt:x:7:0:halt:/sbin:/sbin/halt`<br>`mail:x:8:12:mail:/var/mail:/sbin/nologin`<br>`news:x:9:13:news:/usr/lib/news:/sbin/nologin`<br>`uucp:x:10:14:uucp:/var/spool/uucppublic:/sbin/nologin`<br>`cron:x:16:16:cron:/var/spool/cron:/sbin/nologin`<br>`ftp:x:21:21::/var/lib/ftp:/sbin/nologin`<br>`sshd:x:22:22:sshd:/dev/null:/sbin/nologin`<br>`games:x:35:35:games:/usr/games:/sbin/nologin`<br>`ntp:x:123:123:NTP:/var/empty:/sbin/nologin`<br>`guest:x:405:100:guest:/dev/null:/sbin/nologin`<br>`nobody:x:65534:65534:nobody:/:/sbin/nologin`|`root:x:0:0:root:/root:/bin/sh` <br> `bin:x:1:1:bin:/bin:/sbin/nologin`<br>`daemon:x:2:2:daemon:/sbin:/sbin/nologin`<br>`lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin`<br>`sync:x:5:0:sync:/sbin:/bin/sync`<br>`shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown`<br>`halt:x:7:0:halt:/sbin:/sbin/halt`<br>`mail:x:8:12:mail:/var/mail:/sbin/nologin`<br>`news:x:9:13:news:/usr/lib/news:/sbin/nologin`<br>`uucp:x:10:14:uucp:/var/spool/uucppublic:/sbin/nologin`<br>`cron:x:16:16:cron:/var/spool/cron:/sbin/nologin`<br>`ftp:x:21:21::/var/lib/ftp:/sbin/nologin`<br>`sshd:x:22:22:sshd:/dev/null:/sbin/nologin`<br>`games:x:35:35:games:/usr/games:/sbin/nologin`<br>`ntp:x:123:123:NTP:/var/empty:/sbin/nologin`<br>`guest:x:405:100:guest:/dev/null:/sbin/nologin`<br>`nobody:x:65534:65534:nobody:/:/sbin/nologin` <br>🟩 mysql\:x\:100\:101:mysql:/var/lib/mysql:/sbin/nologin|
 |/var/lib/misc|/var/lib/misc <br>🟩  /var/lib/mysql|
 
+The fact that mysql user has no login, brought some headache trying to run Maria's daemond as mysql user.
+
+```bash
+exec su - mysql -s /bin/sh -c "/usr/bin/mariadbd --datadir=/var/lib/mysql \"\$@\""
+```
+was the solution. -s flags adds a shell to nologin users
 
 # mariadb-install-db
 
@@ -57,6 +63,12 @@ This is the reason for `--user` and `--datadir` arguments to mariadb-install-db
 RUN apk add --no-cache mariadb mariadb-client && mariadb-install-db --user=mysql --datadir=/var/lib/mysql
 ```
 
+# mariadbd default's folder
+
+I founded it running inside container shell this command
+```bash
+apk info -L mariadb | grep mariadbd
+```
 
 # mariadb-server.cnf default status
      

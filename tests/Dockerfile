@@ -12,11 +12,11 @@ LABEL org. label-schema.date="May 2025"
 RUN apk add --no-cache mariadb mariadb-client
 VOLUME /var/lib/mysql
 COPY docker-entrypoint.sh /usr/local/sbin/docker-entrypoint.sh
-RUN chmod +x /usr/local/sbin/docker-entrypoint.sh
+RUN chmod +x /usr/local/sbin/docker-entrypoint.sh ; \
+    sed -i -e '/^skip-networking/ s/^skip-networking/#skip-networking/' /etc/my.cnf.d/mariadb-server.cnf
 
-USER mysql
 ENTRYPOINT ["/usr/local/sbin/docker-entrypoint.sh"]
-#CMD ["/bin/sh"]
+
 
 
 # -rw-r--r--    1 root     root      475.6K May  8 08:36 APKINDEX.36c0efc6.tar.gz
