@@ -7,19 +7,22 @@ LABEL org.label-schema.url="[https://github.com/luismiguelcasadodiaz/inception]"
 LABEL org. label-schema.date="May 2025"
 
 
+#RUN apk add --no-cache mariadb
 
-
-RUN apk add --no-cache mariadb mariadb-client
+RUN apk add --no-cache mariadb mariadb-client 
 VOLUME /var/lib/mysql
 COPY docker-entrypoint.sh /usr/local/sbin/docker-entrypoint.sh
 RUN chmod +x /usr/local/sbin/docker-entrypoint.sh ; \
     sed -i -e '/^skip-networking/ s/^skip-networking/#skip-networking/' /etc/my.cnf.d/mariadb-server.cnf
 EXPOSE 3306
 ENTRYPOINT ["/usr/local/sbin/docker-entrypoint.sh"]
-HEALTHCHECK --interval=10s --timeout=5s --retries=3 CMD mysqladmin ping -h localhost || exit 1
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 CMD mariadb-admin ping -h localhost || exit 1
 
 
 
 
 # -rw-r--r--    1 root     root      475.6K May  8 08:36 APKINDEX.36c0efc6.tar.gz
 # -rw-r--r--    1 root     root        1.9M May  8 08:36 APKINDEX.e33e93f4.tar.gz
+
+# dbserver        latest    dcefd9c99bd4      237MB RUN apk add --no-cache mariadb mariadb-client 
+# dbserver        latest    2eeab44f96e8      198MB RUN apk add --no-cache mariadb

@@ -49,7 +49,7 @@ echo "root:>$DBSERVER_ROOT_PASSWORD<"
 echo "msql:>$DBSERVER_MSQL_PASSWORD<"
 # Si mariadb-install-db debe existir el directorio
 if [ ! -d /var/lib/mysql/mysql ]; then
-    echo "Initializing MariaDB data directory..."
+    echo "0.-Initializing MariaDB data directory..."
     # Explicitly run as root
     mariadb-install-db --user=mysql --datadir=/var/lib/mysql
     if [ $? -ne 0 ]; then
@@ -61,10 +61,11 @@ if [ ! -d /var/lib/mysql/mysql ]; then
     set_mysql_password "root" "MYSQL_ROOT_PASSWORD_FILE" "MYSQL_ROOT_PASSWORD"
     set_mysql_password "mysql" "MYSQL_PASSWORD_FILE" "MYSQL_PASSWORD"
 
-    echo "2.-exec /usr/bin/mariadbd --datadir=/var/lib/mysql $@"
-    exec su - mysql -s /bin/sh -c "/usr/bin/mariadbd --datadir=/var/lib/mysql \"\$@\""
+    echo "2.-exec /usr/bin/mariadbd --datadir=/var/lib/mysql"
+    exec su - mysql -s /bin/sh -c "/usr/bin/mariadbd --datadir=/var/lib/mysql"
 else
-    echo "exec /usr/bin/mariadbd --datadir=/var/lib/mysql $@"
-    cat /etc/my.cnf.d/mariadb-server.cnf
-    exec su - mysql -s /bin/sh -c "/usr/bin/mariadbd --datadir=/var/lib/mysql \"\$@\""
+    echo "1.-exec /usr/bin/mariadbd --datadir=/var/lib/mysql"
+    #cat /etc/my.cnf.d/mariadb-server.cnf
+    exec su - mysql -s /bin/sh -c "/usr/bin/mariadbd --datadir=/var/lib/mysql"
+    #exec /bin/sh
 fi
