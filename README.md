@@ -110,10 +110,13 @@ $ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 
 I configured a github repository to backup all configuration files.
+
 apk add docker            // I installed version 27.3
 apk add docker-compose    // I installed version 2.31
+docker swarn init 
 
 Subject request me to write a Makefile, so i need make
+
 apk add make
 
 ##### ssh-agent start at boot time
@@ -130,7 +133,7 @@ ssh-add ~/.ssh/alpine_inception
 
 ```
 
-
+######
 
 ### docker compose
 Uses a docker-compose.yml file to configure my microservices ecosystem. I need to use version 3.8 of configuration syntax accordingly with m version of docker and docker compose
