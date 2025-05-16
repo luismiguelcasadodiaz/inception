@@ -82,17 +82,7 @@ Two considerations:
 + **check this** Shared folder: I prefer edit all configuration files outside the virtual machine. I work on a folder in the host machine that it is automatically mounted in the virtual machine at boot time (edited /etc/fstab)
 + Shared folder secrets: I will define txt files with passwords outside
 
-During the project the original 2GB disk was not enough. Early in the project docker compose reported `no space left on device`.
 
-I duplicated hard disk size wiht this commands
-
-```bash
-VBoxManage modifymedium disk "/sgoinfre/students/luicasad/maria/maria/inception Clone.vdi" --resize 4096
-VBoxManage showhdinfo "/sgoinfre/students/luicasad/maria/maria/inception Clone.vdi"
-```
-
-That requires a edition of the virtual machine partition table. With `fdisk /dev/sda` deleted 3rd partition `-d` without erase data.
-That requires a file system extension. `resize2fs /dev/sda3` made it possible.
 
 ### Alpine config
 I have chosen Alpine Linux due to its small size. There is a version optimized for virtual systems. Alpine virtual with 66 MB. [alpine-virt-3.21.3-x86_64.iso](https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-virt-3.21.3-x86_64.iso)

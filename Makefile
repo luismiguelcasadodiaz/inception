@@ -5,13 +5,13 @@ SERVICE3 = contentserver
 SERVICES = $(SERVICE1) $(SERVICE2) $(SERVICE3) 
 
 
-.PHONY: all
+.PHONY: all web db content webclean dbclean contentclean 
 # --build image if not exists and run it in detached mode (-d)
 all:
 	docker compose -f ./srcs/docker-compose.yml up --build -d
 
 # Individual rules
-.PHONY: web db content webclean dbclean contentclean 
+
 
 web:
 	docker compose -f ./srcs/docker-compose.yml build webserver
@@ -29,19 +29,24 @@ contentclean:
 	docker image rm $(SERVICE3)
 
 
+# global rules 
+.PHONY: up down logs clean fclean
 # Ejecutar docker compose up
 up:
 	docker compose -f ./srcs/docker-compose.yml up
 
 # Detener los contenedores
 down:
-	docker compose down
+	docker compose -f ./srcs/docker-compose.yml down
 
 # Mostrar los logs del servicio
 logs:
-	docker compose logs $(SERVICES)
+	docker compose -f ./srcs/docker-compose.yml logs $(SERVICES)
 
 # Eliminar contenedores y volúmenes
 clean:
 	docker image rm -f $(SERVICES)
+
+fclean:
+	docker system prune -a
 
