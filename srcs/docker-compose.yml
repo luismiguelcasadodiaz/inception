@@ -40,12 +40,12 @@ networks:
 
 secrets:
   dbserver_root_password:
-    file: ./secrets/dbserver_root_password.txt
+    file: ../secrets/dbserver_root_password.txt
   dbserver_msql_password:
-    file: ./secrets/dbserver_msql_password.txt
+    file: ../secrets/dbserver_msql_password.txt
   contentserver_root_password:
-    file: ./secrets/contentserver_root_password.txt
+    file: ../secrets/contentserver_root_password.txt
   contentserver_user_password:
-    file: ./secrets/contentserver_user_password.txt
+    file: ../secrets/contentserver_user_password.txt
 
 

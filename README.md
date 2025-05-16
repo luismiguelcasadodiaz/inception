@@ -79,7 +79,8 @@ VirtualBox from Oracle is a free and open-source virtualization software package
 
 Two considerations:
 + Network configuration:Bridge. I want the virtual machine gets a IP in the same net that my host Machine
-+ Shared folder: I prefer edit all configuration files outside the virtual machine. I work on a folder in the host machine that it is automatically mounted in the virtual machine at boot time (edited /etc/fstab)
++ **check this** Shared folder: I prefer edit all configuration files outside the virtual machine. I work on a folder in the host machine that it is automatically mounted in the virtual machine at boot time (edited /etc/fstab)
++ Shared folder secrets: I will define txt files with passwords outside
 
 During the project the original 2GB disk was not enough. Early in the project docker compose reported `no space left on device`.
 
@@ -185,3 +186,4 @@ There is a `watch` instruction in compose language to update a file inside a con
 
 + [MariaDb Dockerfile Template](https://github.com/mariadb-corporation/mariadb-server-docker/blob/master/Dockerfile.template)
 + [Docker Labels Schema](http://label-schema.org/rc1/#:~:text=of%20the%20code.-,schema%2Dversion,docker.cmd)
++ [The twelve-factor app](https://12factor.net/)
