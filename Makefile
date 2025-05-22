@@ -2,10 +2,11 @@
 SERVICE1 = webserver
 SERVICE2 = dbserver
 SERVICE3 = contentserver
-SERVICES = $(SERVICE1) $(SERVICE2) $(SERVICE3) 
+SERVICE9 = client
+SERVICES = $(SERVICE1) $(SERVICE2) $(SERVICE3) $(SERVICE9)
 
 
-.PHONY: all web db content webclean dbclean contentclean 
+.PHONY: all web db content client webclean dbclean contentclean clientclean 
 # --build image if not exists and run it in detached mode (-d)
 all:
 	docker compose -f ./srcs/docker-compose.yml up --build -d
@@ -28,6 +29,10 @@ content:
 contentclean:
 	docker image rm $(SERVICE3)
 
+client:
+	docker compose -f ./srcs/docker-compose.yml build client
+clientclean:
+	docker image rm $(SERVICE9)
 
 # global rules 
 .PHONY: up down logs clean fclean

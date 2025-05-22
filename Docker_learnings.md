@@ -65,3 +65,19 @@ we can use ...
 ```bash
 docker system prune -a
 ```
+
+# network
+Docker automatically assigns the first IP in the subnet  as the gateway for internal routing. 
+This means 192.168.1.1 is likely used by Docker itself, leading to the "Address already in use" error.
+
+I defined a small subnet (/28), meaning only 14 usable addresses (from .1 to .14).
+
+Reserved addresses:
+
++ 192.168.1.0 → Network address
+
++ 192.168.1.1 → Docker gateway
+
++ 192.168.1.15 → Broadcast address
+
+Usable range: 192.168.1.2 → 192.168.1.14

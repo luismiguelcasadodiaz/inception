@@ -1,0 +1,12 @@
+services:
+  client:
+    command: echo "I'm running ${COMPOSE_PROJECT_NAME}/client"
+    image: client # EL nombre de la imagen debe coincidir con el nombre del servicio
+
+    networks:
+      inception_net:
+        ipv4_address: 192.168.1.14  # Fixed IP
+    restart: always
+    build:
+      context: ../client
+      dockerfile: dockerfile_client

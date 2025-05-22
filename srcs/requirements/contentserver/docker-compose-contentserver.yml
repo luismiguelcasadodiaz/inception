@@ -2,6 +2,9 @@ services:
   contentserver:
     command: echo "I'm running ${COMPOSE_PROJECT_NAME}/contentserver"
     image: contentserver # EL nombre de la imagen debe coincidir con el nombre del servicio
+    networks:
+      inception_net:
+        ipv4_address: 192.168.1.3  # Fixed IP
     restart: always
     build:
       context: ../contentserver

@@ -1,3 +1,5 @@
 *.iso
 *.iso.sha256
 secrets
+srcs/requirements/dbserver/db_data/*
+tests/data/*

@@ -3,6 +3,7 @@ include:
   - ./requirements/dbserver/docker-compose-dbserver.yml
   - ./requirements/webserver/docker-compose-webserver.yml
   - ./requirements/contentserver/docker-compose-contentserver.yml
+  - ./requirements/client/docker-compose-client.yml
 
 # services:
 
@@ -37,6 +38,9 @@ include:
 networks:
   inception_net:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.1.0/28  # Define the IP range
 
 secrets:
   dbserver_root_password:
