@@ -1,6 +1,7 @@
 services:
   client:
-    command: echo "I'm running ${COMPOSE_PROJECT_NAME}/client"
+    command: ["/bin/sh", "-c", "echo \"running client\"; exec /bin/sh"]
+
     image: client # EL nombre de la imagen debe coincidir con el nombre del servicio
 
     networks:
