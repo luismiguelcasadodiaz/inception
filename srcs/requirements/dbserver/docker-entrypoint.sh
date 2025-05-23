@@ -4,6 +4,7 @@ set -e
 # Function to read secret from file
 read_secret() {
     local file="$1"
+    echo "file $file"
     if [ -f "$file" ]; then
         cat "$file"
     fi
@@ -15,13 +16,16 @@ set_mysql_password() {
     local file_var="$2"
     local env_var="$3"
 
-    local password=$(read_secret "${!file_var}")
+    local password=$(read_secret "$file_var")
+    echo "from secret file =$file_var the user =$username has this pass =$password"
+    echo "envi =$env_var"
+   
 
     if [ -n "$password" ]; then
         echo "Setting password for user '$username' from secret file..."
-    elif [ -n "${!env_var}" ]; then
+    elif [ -n "$env_var" ]; then
         echo "Warning: Using $env_var environment variable (less secure)."
-        password="${!env_var}"
+        password="$env_var"
         echo "Setting password for user '$username' from environment variable..."
     else
         echo "No password provided for user '$username'. Skipping."
@@ -43,10 +47,12 @@ mkdir -p /run/mysqld
 chown -R mysql:mysql /run/mysqld
 
 # Set root password if MYSQL_ROOT_PASSWORD_FILE is set
+echo "root file:>$DBSERVER_ROOT_PASSWORD_FILE<"
+echo "msql file:>$DBSERVER_MSQL_PASSWORD_FILE<"
 DBSERVER_ROOT_PASSWORD=$(read_secret "$DBSERVER_ROOT_PASSWORD_FILE")
 DBSERVER_MSQL_PASSWORD=$(read_secret "$DBSERVER_MSQL_PASSWORD_FILE")
-echo "root:>$DBSERVER_ROOT_PASSWORD<"
-echo "msql:>$DBSERVER_MSQL_PASSWORD<"
+echo "root pass:>$DBSERVER_ROOT_PASSWORD<"
+echo "msql pass:>$DBSERVER_MSQL_PASSWORD<"
 # Si mariadb-install-db debe existir el directorio
 if [ ! -d /var/lib/mysql/mysql ]; then
     echo "0.-Initializing MariaDB data directory..."
@@ -56,12 +62,20 @@ if [ ! -d /var/lib/mysql/mysql ]; then
         echo "Error initializing MariaDB data directory."
         exit 1
     fi
-    echo "1.-MariaDB data directory initialized."
-    # Set passwords using the function
-    set_mysql_password "root" "MYSQL_ROOT_PASSWORD_FILE" "MYSQL_ROOT_PASSWORD"
-    set_mysql_password "mysql" "MYSQL_PASSWORD_FILE" "MYSQL_PASSWORD"
 
-    echo "2.-exec /usr/bin/mariadbd --datadir=/var/lib/mysql"
+    echo "1.-MariaDB data directory initialized."
+    echo "2.-exec /usr/bin/mariadbd --datadir=/var/lib/mysql &"
+    /usr/bin/mariadbd -u root --datadir=/var/lib/mysql > /tmp/mariadb.log 2>&1 &
+    mariadb_pid=$!
+    echo "3.-MariaDB server up and running as user=root with PID=$mariadb_pid"
+    # Set passwords using the function
+    set_mysql_password "root" "$DBSERVER_ROOT_PASSWORD_FILE" "$MYSQL_ROOT_PASSWORD"
+    echo "4.-MariaDB root user password settled"
+    set_mysql_password "mysql" "$DBSERVER_MSQL_PASSWORD_FILE" "MYSQL_PASSWORD"
+    echo "5.-MariaDB mysql user password settled"
+    wait "$mariadb_pid"
+    echo "MariaDB exited with $?"
+    echo "6.-MariaDB server launch ..."
     exec su - mysql -s /bin/sh -c "/usr/bin/mariadbd --datadir=/var/lib/mysql"
 else
     echo "1.-exec /usr/bin/mariadbd --datadir=/var/lib/mysql"
