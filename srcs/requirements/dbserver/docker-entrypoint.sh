@@ -64,22 +64,21 @@ if [ ! -d /var/lib/mysql/mysql ]; then
     fi
 
     echo "1.-MariaDB data directory initialized."
-    echo "2.-exec /usr/bin/mariadbd --datadir=/var/lib/mysql &"
-    /usr/bin/mariadbd -u root --datadir=/var/lib/mysql > /tmp/mariadb.log 2>&1 &
-    mariadb_pid=$!
-    echo "3.-MariaDB server up and running as user=root with PID=$mariadb_pid"
+    #echo "2.-exec /usr/bin/mariadbd --datadir=/var/lib/mysql &"
+    #/usr/bin/mariadbd -u root --datadir=/var/lib/mysql > /tmp/mariadb.log 2>&1 &
+    #mariadb_pid=$!
+    #echo "3.-MariaDB server up and running as user=root with PID=$mariadb_pid"
     # Set passwords using the function
+    #mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$DBSERVER_ROOT_PASSWORD';"
     set_mysql_password "root" "$DBSERVER_ROOT_PASSWORD_FILE" "$MYSQL_ROOT_PASSWORD"
     echo "4.-MariaDB root user password settled"
-    set_mysql_password "mysql" "$DBSERVER_MSQL_PASSWORD_FILE" "MYSQL_PASSWORD"
+    set_mysql_password "mysql" "$DBSERVER_MSQL_PASSWORD_FILE" "$MYSQL_PASSWORD"
     echo "5.-MariaDB mysql user password settled"
-    wait "$mariadb_pid"
-    echo "MariaDB exited with $?"
+    #wait "$mariadb_pid"
+    #echo "MariaDB exited with $?"
     echo "6.-MariaDB server launch ..."
     exec su - mysql -s /bin/sh -c "/usr/bin/mariadbd --datadir=/var/lib/mysql"
 else
-    echo "1.-exec /usr/bin/mariadbd --datadir=/var/lib/mysql"
-    #cat /etc/my.cnf.d/mariadb-server.cnf
+    echo "7.-MariaDB server launch ..."
     exec su - mysql -s /bin/sh -c "/usr/bin/mariadbd --datadir=/var/lib/mysql"
-    #exec /bin/sh
 fi
