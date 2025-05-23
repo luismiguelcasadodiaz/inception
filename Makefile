@@ -35,7 +35,7 @@ clientclean:
 	docker image rm $(SERVICE9)
 
 # global rules 
-.PHONY: up down logs clean fclean
+.PHONY: up down stop logs clean fclean
 # Ejecutar docker compose up
 up:
 	docker compose -f ./srcs/docker-compose.yml up
@@ -43,6 +43,10 @@ up:
 # Detener los contenedores
 down:
 	docker compose -f ./srcs/docker-compose.yml down
+
+# Detener los contenedores
+stop:
+	docker compose -f ./srcs/docker-compose.yml stop
 
 # Mostrar los logs del servicio
 logs:
