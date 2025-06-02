@@ -65,6 +65,7 @@ uid=101177(luicasad) gid=4223(2023_barcelona) groups=204(_developer),4223(2023_b
 ```sh
 addgroup -g 4223 2023_barcelona
 adduser -u 101177 -G 2023_barcelona -D luicasad
+adduser luicasad docker
 ```
 
 # install required packages
@@ -77,9 +78,29 @@ apk add docker-compose
 
 
 
+
+
+
+# docker wakes up at boot time
+```sh
+rc-update add docker boot
+rd-service docker start
+```
+
+# init swarm service for secrets
+
+```sh
 docker swarm init
+```
+
+# allow my user to run docker
+```sh
+adduser luicasad docker
+```
 
 # keys
+
+Copy you id_rsa key from your 42 school home directory to work wiht the delivery repository
 
 # /bin/sh
 

@@ -24,6 +24,8 @@ That requires a file system extension. `resize2fs /dev/sda3` made it possible.
 
 This mechanism allows me to edit from the host machine, using Visual Studio code, inside the virtual machine.
 
+<img src="https://github.com/user-attachments/assets/d2d72222-050d-4f1a-b480-989d1778f7ce" alt="Sample Image" style="width:50%; height:auto;">
+
 ![Shared folders](https://github.com/user-attachments/assets/d2d72222-050d-4f1a-b480-989d1778f7ce)
 
 The mounted shared folder in the virtual machine gets ownership root:vboxsf, no mater how you configure fstab

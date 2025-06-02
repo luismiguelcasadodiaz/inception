@@ -1,5 +1,5 @@
 *.iso
 *.iso.sha256
-secrets
+secrets/*.txt
 srcs/requirements/dbserver/db_data/*
 tests/data/*
