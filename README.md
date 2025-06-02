@@ -177,3 +177,6 @@ There is a `watch` instruction in compose language to update a file inside a con
 + [MariaDb Dockerfile Template](https://github.com/mariadb-corporation/mariadb-server-docker/blob/master/Dockerfile.template)
 + [Docker Labels Schema](http://label-schema.org/rc1/#:~:text=of%20the%20code.-,schema%2Dversion,docker.cmd)
 + [The twelve-factor app](https://12factor.net/)
+
+test
+
