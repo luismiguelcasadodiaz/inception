@@ -24,3 +24,8 @@ docker swarm init --advertise-addr $myip
 
 apk add make
 apk add jq
+
+# Instalamos las virtualbox-guest-additions para que funcione la carpeta compartida
+apk add virtualbox-guest-additions
+rc-update add virtualbox-guest-additions default
+rc-service virtualbox-guest-additions start
