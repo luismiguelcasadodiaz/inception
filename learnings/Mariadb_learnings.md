@@ -48,5 +48,34 @@ MariaDB [(none)]> SELECT Host, User, password FROM mysql.user;
 
 
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.1.1' IDENTIFIED BY 'your_root_password';
+```sh
+MariaDB [(none)]> SELECT Host, User, password FROM mysql.user\g
++------------------------------------+-------------+-------------------------------------------+
+| Host                               | User        | Password                                  |
++------------------------------------+-------------+-------------------------------------------+
+| localhost                          | mariadb.sys |                                           |
+| localhost                          | root        | invalid                                   |
+| localhost                          | mysql       | invalid                                   |
+|                                    | PUBLIC      |                                           |
+| localhost                          |             |                                           |
+| 68a573832cf0                       |             |                                           |
+| tirame_cli.inception_inception_net | root        | *B688F3445F289C2E7E1B3ED123BF87066EA672A0 |
+| 192.168.1.14                       | root        | *B688F3445F289C2E7E1B3ED123BF87066EA672A0 |
++------------------------------------+-------------+-------------------------------------------+
+```
 
-# lists current users un mariadb server
+
+# lists current users in mariadb server
+```sh
+MariaDB [(none)]> SELECT DISTINCT user FROM mysql.global_priv;
++-------------+
+| user        |
++-------------+
+| PUBLIC      |
+| root        |
+|             |
+| mariadb.sys |
+| mysql       |
++-------------+
+```
+
