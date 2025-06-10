@@ -9,5 +9,6 @@ LABEL org. label-schema.date="May 2025"
 RUN apk add --no-cache mariadb-client 
 
 # only to test server
-ENTRYPOINT ["/usr/bin/mariadb"]
-CMD ["-h", "192.168.1.2"] # Example default arguments
+ENTRYPOINT ["/usr/bin/mariadb", "-h", "192.168.1.2"]
+CMD ["-u", "root" , "-p"]
+# Example default arguments

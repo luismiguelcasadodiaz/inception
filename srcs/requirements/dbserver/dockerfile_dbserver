@@ -10,12 +10,25 @@ LABEL org. label-schema.date="May 2025"
 #RUN apk add --no-cache mariadb
 
 RUN apk add --no-cache mariadb mariadb-client 
+
+# recreate mysql folder with appropiate ownerrship
+RUN set -ex; \
+    rm -rf /var/lib/mysql; \
+    mkdir -p /var/lib/mysql /var/run/mysql; \
+    chown -R mysql:mysql /var/lib/mysql /var/run/mysql; \
+    chmod 777 /var/run/mysql
+
 VOLUME /var/lib/mysql
+
 COPY docker-entrypoint.sh /usr/local/sbin/docker-entrypoint.sh
+
 RUN chmod +x /usr/local/sbin/docker-entrypoint.sh ; \
     sed -i -e '/^skip-networking/ s/^skip-networking/#skip-networking/' /etc/my.cnf.d/mariadb-server.cnf
+
 EXPOSE 3306
+
 ENTRYPOINT ["/usr/local/sbin/docker-entrypoint.sh"]
+
 HEALTHCHECK --interval=10s --timeout=5s --retries=3 CMD mariadb-admin ping -h localhost || exit 1
 
 

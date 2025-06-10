@@ -1,10 +1,10 @@
 #!/bin/sh
-set -e
+set -ex
 
 # Function to read secret from file
 read_secret() {
     local file="$1"
-    echo "file $file"
+    #echo "file $file"
     if [ -f "$file" ]; then
         cat "$file"
     fi
@@ -33,13 +33,15 @@ set_mysql_password() {
     fi
 
     if [ "$username" = "root" ]; then
-        mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$password';"
+	echo "/////// root password setup ////$(whoami)///"
+        mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$password';" -S /run/mysqld/mysqld.sock
     else
-        mariadb -u root -e "CREATE USER IF NOT EXISTS '$username'@'localhost' IDENTIFIED BY '$password';"
-        mariadb -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$username'@'localhost';"
+	echo "//////  user $username creation and password set ///////"
+        mariadb -u root -e "CREATE USER IF NOT EXISTS '$username'@'localhost' IDENTIFIED BY '$password';" -S /run/mysqld/mysqld.sock
+        mariadb -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$username'@'localhost';" -S /run/mysqld/mysqld.sock
     fi
 
-    mariadb -u root -e "FLUSH PRIVILEGES;"
+    mariadb -u root -e "FLUSH PRIVILEGES;" -S /run/mysqld/mysqld.sock
     echo "Password set for user '$username'."
 }
 
@@ -64,10 +66,17 @@ if [ ! -d /var/lib/mysql/mysql ]; then
     fi
 
     echo "1.-MariaDB data directory initialized."
-    #echo "2.-exec /usr/bin/mariadbd --datadir=/var/lib/mysql &"
-    #/usr/bin/mariadbd -u root --datadir=/var/lib/mysql > /tmp/mariadb.log 2>&1 &
-    #mariadb_pid=$!
-    #echo "3.-MariaDB server up and running as user=root with PID=$mariadb_pid"
+    echo "2.-exec /usr/bin/mariadbd --datadir=/var/lib/mysql &"
+    /usr/bin/mariadbd -u root --datadir=/var/lib/mysql --socket=/run/mysqld/mysqld.sock > /tmp/mariadb.log 2>&1 &
+    mariadb_pid=$!
+
+    for i in $(seq 1 30); do
+	mariadb -u root -p"$DBSERVER_ROOT_PASSWORD" -S /run/mysqld/mysqld.sock -e "SELECT 1" &>/dev/null && break
+	echo "MariaDB not ready yes, waiting ....($i/30)"
+	sleep 1
+    done
+
+    echo "3.-MariaDB server up and running as user=root with PID=$mariadb_pid"
     # Set passwords using the function
     #mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$DBSERVER_ROOT_PASSWORD';"
     set_mysql_password "root" "$DBSERVER_ROOT_PASSWORD_FILE" "$MYSQL_ROOT_PASSWORD"
