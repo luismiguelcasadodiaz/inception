@@ -3,7 +3,9 @@ services:
     command: ["/bin/sh", "-c", "echo \"running client\"; exec /bin/sh"]
 
     image: client # EL nombre de la imagen debe coincidir con el nombre del servicio
-
+    depends_on:
+      dbserver:
+        condition: service_healthy  # Ensures database server is actually ready
     networks:
       inception_net:
         ipv4_address: 192.168.1.14  # Fixed IP
