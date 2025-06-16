@@ -4,7 +4,6 @@ set -ex
 # Function to read secret from file
 read_secret() {
     local file="$1"
-    #echo "file $file"
     if [ -f "$file" ]; then
         cat "$file"
     fi
@@ -33,20 +32,22 @@ set_mysql_password() {
     fi
 
     if [ "$username" = "root" ]; then
+        mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$password'; FLUSH PRIVILEGES; " -S /run/mysqld/mysqld.sock
 	echo "/////// root password setup ////$(whoami)///"
-        mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$password';" -S /run/mysqld/mysqld.sock
     else
-	echo "//////  user $username creation and password set ///////"
         mariadb -u root -e "CREATE USER IF NOT EXISTS '$username'@'localhost' IDENTIFIED BY '$password';" -S /run/mysqld/mysqld.sock
-        mariadb -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$username'@'localhost';" -S /run/mysqld/mysqld.sock
+        mariadb -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$username'@'localhost'; FLUSH PRIVILEGES; " -S /run/mysqld/mysqld.sock
+	echo "//////  user $username creation and password set ///////"
     fi
 
-    mariadb -u root -e "FLUSH PRIVILEGES;" -S /run/mysqld/mysqld.sock
+    #mariadb -u root -e "FLUSH PRIVILEGES;" -S /run/mysqld/mysqld.sock
     echo "Password set for user '$username'."
 }
 
 mkdir -p /run/mysqld
 chown -R mysql:mysql /run/mysqld
+mkdir -p /var/lib/mysql
+chown -R mysql:mysql /var/lib/mysql
 
 # Set root password if MYSQL_ROOT_PASSWORD_FILE is set
 echo "root file:>$DBSERVER_ROOT_PASSWORD_FILE<"
@@ -76,14 +77,18 @@ if [ ! -d /var/lib/mysql/mysql ]; then
 	sleep 1
     done
 
-    echo "3.-MariaDB server up and running as user=root with PID=$mariadb_pid"
+    echo "3.-MariaDB server up and running temporally as user=root with PID=$mariadb_pid"
     # Set passwords using the function
     #mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$DBSERVER_ROOT_PASSWORD';"
-    set_mysql_password "root" "$DBSERVER_ROOT_PASSWORD_FILE" "$MYSQL_ROOT_PASSWORD"
-    echo "4.-MariaDB root user password settled"
+
     set_mysql_password "mysql" "$DBSERVER_MSQL_PASSWORD_FILE" "$MYSQL_PASSWORD"
-    echo "5.-MariaDB mysql user password settled"
-    #wait "$mariadb_pid"
+    echo "4.-MariaDB mysql user password settled"
+
+    set_mysql_password "root" "$DBSERVER_ROOT_PASSWORD_FILE" "$MYSQL_ROOT_PASSWORD"
+    echo "5.-MariaDB root user password settled"
+    /usr/bin/mariadb-admin -u root - p"$DBSERVER_ROOT_PASSWORD" -S /run/mysqld/mysqld.sock shutdown
+    wait "$mariadb_pid" || true
+
     #echo "MariaDB exited with $?"
     echo "6.-MariaDB server launch ..."
     exec su - mysql -s /bin/sh -c "/usr/bin/mariadbd --datadir=/var/lib/mysql"

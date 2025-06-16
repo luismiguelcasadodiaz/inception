@@ -57,5 +57,5 @@ clean:
 	docker image rm -f $(SERVICES)
 
 fclean:
-	docker system prune -a
+	docker system prune -a --volumes
 
