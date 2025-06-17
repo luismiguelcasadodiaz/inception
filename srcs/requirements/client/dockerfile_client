@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.21.3
 LABEL org.label-schema.schema-version = "1.0"
 LABEL org.label-schema.maintainer="Luis Miguel Casado Díaz <luicasad@student.42barcelona.com>"
 LABEL org.label-schema.version="11.4.5"

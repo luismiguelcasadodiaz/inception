@@ -86,7 +86,7 @@ if [ ! -d /var/lib/mysql/mysql ]; then
 
     set_mysql_password "root" "$DBSERVER_ROOT_PASSWORD_FILE" "$MYSQL_ROOT_PASSWORD"
     echo "5.-MariaDB root user password settled"
-    /usr/bin/mariadb-admin -u root - p"$DBSERVER_ROOT_PASSWORD" -S /run/mysqld/mysqld.sock shutdown
+    /usr/bin/mariadb-admin -u root -p"$DBSERVER_ROOT_PASSWORD" -S /run/mysqld/mysqld.sock shutdown
     wait "$mariadb_pid" || true
 
     #echo "MariaDB exited with $?"

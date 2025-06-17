@@ -1,2 +1,9 @@
 FROM alpine:3.21.3
+RUN apk add --no-cache   php84-fpm php84-json php84-zlib php84-xml php84-xmlwriter php84-simplexml php84-pdo php84-phar php84-openssl \
+    php84-pdo_mysql php84-mysqli php84-session \
+    php84-gd php84-iconv php84-gmp php84-zip \
+    php84-curl php84-opcache php84-ctype php84-apcu \
+    php84-intl php84-bcmath php84-dom php84-mbstring php84-xmlreader && \
+    rm -rf /var/cache/apk/*
+
 
