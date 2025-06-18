@@ -14,10 +14,11 @@ set_mysql_password() {
     local username="$1"
     local file_var="$2"
     local env_var="$3"
+    local ip="$4"
 
     local password=$(read_secret "$file_var")
-    echo "from secret file =$file_var the user =$username has this pass =$password"
-    echo "envi =$env_var"
+    echo "from secret file =$file_var the user =$username has this pass =$password from ip=$ip"
+    echo "envi =>$env_var<"
    
 
     if [ -n "$password" ]; then
@@ -35,13 +36,13 @@ set_mysql_password() {
         mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$password'; FLUSH PRIVILEGES; " -S /run/mysqld/mysqld.sock
 	echo "/////// root password setup ////$(whoami)///"
     else
-        mariadb -u root -e "CREATE USER IF NOT EXISTS '$username'@'localhost' IDENTIFIED BY '$password';" -S /run/mysqld/mysqld.sock
-        mariadb -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$username'@'localhost'; FLUSH PRIVILEGES; " -S /run/mysqld/mysqld.sock
+        mariadb -u root -e "CREATE USER IF NOT EXISTS '$username'@'$ip' IDENTIFIED BY '$password';" -S /run/mysqld/mysqld.sock
+        mariadb -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$username'@'$ip'; FLUSH PRIVILEGES; " -S /run/mysqld/mysqld.sock
 	echo "//////  user $username creation and password set ///////"
     fi
 
     #mariadb -u root -e "FLUSH PRIVILEGES;" -S /run/mysqld/mysqld.sock
-    echo "Password set for user '$username'."
+    echo "Password set for user '$username' from '$ip'."
 }
 
 mkdir -p /run/mysqld
@@ -81,7 +82,7 @@ if [ ! -d /var/lib/mysql/mysql ]; then
     # Set passwords using the function
     #mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$DBSERVER_ROOT_PASSWORD';"
 
-    set_mysql_password "mysql" "$DBSERVER_MSQL_PASSWORD_FILE" "$MYSQL_PASSWORD"
+    set_mysql_password "mysql" "$DBSERVER_MSQL_PASSWORD_FILE" "$MYSQL_PASSWORD" "192.168.1.14"
     echo "4.-MariaDB mysql user password settled"
 
     set_mysql_password "root" "$DBSERVER_ROOT_PASSWORD_FILE" "$MYSQL_ROOT_PASSWORD"
