@@ -1,4 +1,12 @@
 FROM alpine:3.21.3
+
+LABEL org.label-schema.schema-version = "1.0"
+LABEL org.label-schema.maintainer="Luis Miguel Casado Díaz <luicasad@student.42barcelona.com>"
+LABEL org.label-schema.version="11.4.5"
+LABEL org.label-schema.description="A Docker image running php and word server on Alpine Linux."
+LABEL org.label-schema.url="[https://github.com/luismiguelcasadodiaz/inception]"
+LABEL org. label-schema.date="May 2025"
+
 RUN apk add --no-cache   php84-fpm php84-json php84-zlib php84-xml php84-xmlwriter php84-simplexml php84-pdo php84-phar php84-openssl \
     php84-pdo_mysql php84-mysqli php84-session \
     php84-gd php84-iconv php84-gmp php84-zip \
@@ -6,4 +14,4 @@ RUN apk add --no-cache   php84-fpm php84-json php84-zlib php84-xml php84-xmlwrit
     php84-intl php84-bcmath php84-dom php84-mbstring php84-xmlreader && \
     rm -rf /var/cache/apk/*
 
-
+EXPOSE 9000

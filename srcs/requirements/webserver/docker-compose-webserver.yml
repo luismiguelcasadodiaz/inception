@@ -14,4 +14,10 @@ services:
       context: ../webserver
       dockerfile: dockerfile_webserver
     ports:
-      - "8080:80"
+      - "443:443"
+    # --- Logging Configuration ---
+    logging:
+      driver: "json-file" # Use json-file for easier access if you need to debug raw logs
+      options:
+        max-size: "3m" # Keep each log file up to 50MB
+        max-file: "3"   # Keep the 5 most recent log files

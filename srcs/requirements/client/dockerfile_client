@@ -8,7 +8,11 @@ LABEL org. label-schema.date="May 2025"
 
 RUN apk add --no-cache mariadb-client 
 
+COPY docker-entrypoint.sh /usr/local/sbin/docker-entrypoint.sh
+
+RUN chmod +x /usr/local/sbin/docker-entrypoint.sh
+
 # only to test server
-ENTRYPOINT ["/usr/bin/mariadb", "-h", "192.168.1.2"]
-CMD ["-u", "root" , "-p"]
+ENTRYPOINT ["/usr/local/sbin/docker-entrypoint.sh"]
+
 # Example default arguments

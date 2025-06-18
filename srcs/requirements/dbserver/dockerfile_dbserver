@@ -6,9 +6,6 @@ LABEL org.label-schema.description="A Docker image running MariaDB server on Alp
 LABEL org.label-schema.url="[https://github.com/luismiguelcasadodiaz/inception]"
 LABEL org. label-schema.date="May 2025"
 
-
-#RUN apk add --no-cache mariadb
-
 RUN apk add --no-cache mariadb mariadb-client 
 
 # recreate mysql folder with appropiate ownerrship
