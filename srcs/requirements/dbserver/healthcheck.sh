@@ -2,7 +2,7 @@
 set -ex
 
 # Read the root password from the mounted secret file
-ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
+ROOT_PASSWORD=$(cat /run/secrets/dbserver_root_password)
 
 # Ping MariaDB using the retrieved password
 mariadb-admin ping -u root --password="$ROOT_PASSWORD" -h localhost
