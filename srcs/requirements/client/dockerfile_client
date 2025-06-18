@@ -7,7 +7,7 @@ LABEL org.label-schema.url="[https://github.com/luismiguelcasadodiaz/inception]"
 LABEL org. label-schema.date="May 2025"
 
 RUN apk add --no-cache mariadb-client 
-RUN adduser mysql
+RUN adduser -D -s /bin/sh mysql
 
 COPY docker-entrypoint.sh /usr/local/sbin/docker-entrypoint.sh
 

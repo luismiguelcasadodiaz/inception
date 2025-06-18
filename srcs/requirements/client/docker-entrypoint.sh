@@ -12,4 +12,4 @@ read_secret() {
 DBSERVER_MSQL_PASSWORD=$(read_secret "$DBSERVER_MSQL_PASSWORD_FILE")
 echo "msql pass:>$DBSERVER_MSQL_PASSWORD<"
 
-exec su - mysql -s /bin/sh -c "/usr/bin/mariadb -u mysql -p$DBSERVER_MSQL_PASSWORD -h 192.168.1.2 --datadir=/var/lib/mysql"
+exec su - mysql -s /bin/sh -c "/usr/bin/mariadb -u mysql -p$DBSERVER_MSQL_PASSWORD -h 192.168.1.2"
