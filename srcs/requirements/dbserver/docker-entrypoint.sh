@@ -83,7 +83,7 @@ if [ ! -d /var/lib/mysql/mysql ]; then
     # Set passwords using the function
     #mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$DBSERVER_ROOT_PASSWORD';"
 
-    set_mysql_password "mysql" "$DBSERVER_MSQL_PASSWORD_FILE" "$MYSQL_PASSWORD" "%"
+    set_mysql_password "mysql" "$DBSERVER_MSQL_PASSWORD_FILE" "$MYSQL_PASSWORD" "192.168.1.%"
     echo "4.-MariaDB mysql user password settled"
 
     set_mysql_password "root" "$DBSERVER_ROOT_PASSWORD_FILE" "$MYSQL_ROOT_PASSWORD"
