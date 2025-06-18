@@ -13,6 +13,13 @@ services:
     build:
       context: ../client
       dockerfile: dockerfile_client
+      
+    # --- Secrets Configuration ---      
+    secrets:
+      - dbserver_msql_password
+    environment:
+      DBSERVER_MSQL_PASSWORD_FILE: /run/secrets/dbserver_msql_password
+
     # --- Logging Configuration ---
     logging:
       driver: "json-file" # Use json-file for easier access if you need to debug raw logs
