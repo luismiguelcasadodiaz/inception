@@ -73,7 +73,8 @@ if [ ! -d /var/lib/mysql/mysql ]; then
     mariadb_pid=$!
 
     for i in $(seq 1 30); do
-	mariadb -u root -p"$DBSERVER_ROOT_PASSWORD" -S /run/mysqld/mysqld.sock -e "SELECT 1" &>/dev/null && break
+	#mariadb -u root -p"$DBSERVER_ROOT_PASSWORD" -S /run/mysqld/mysqld.sock -e "SELECT 1" &>/dev/null && break
+    mariadb -u root -S /run/mysqld/mysqld.sock -e "SELECT 1" &>/dev/null && break
 	echo "MariaDB not ready yes, waiting ....($i/30)"
 	sleep 1
     done
