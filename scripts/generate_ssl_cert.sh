@@ -1,0 +1,29 @@
+#!/bin/sh                                                                                                                                                                        
+                                                                                                                                                                                 
+# Ruta de salida                                                                                                                                                                 
+CERT_DIR="/home/luicasad/certs"                                                                                                                                                  
+KEY_FILE="$CERT_DIR/nginx.key"                                                                                                                                                   
+CRT_FILE="$CERT_DIR/nginx.crt"                                                                                                                                                   
+                                                                                                                                                                                 
+# Obtener la IP de la interfaz de red principal (excluyendo loopback y docker)                                                                                                   
+IP=$(ip addr show | awk '/inet / && $2 !~ /^127/ && $NF !~ /^docker/ { sub(/\/.*/, "", $2); print $2; exit }')                                                                   
+                                                                                                                                                                                 
+# Verificar que se obtuvo la IP                                                                                                                                                  
+if [ -z "$IP" ]; then                                                                                                                                                            
+  echo "No se pudo obtener la direcci..n IP. Abortando."                                                                                                                         
+  exit 1                                                                                                                                                                         
+fi                                                                                                                                                                               
+                                                                                                                                                                                 
+# Crear directorio si no existe                                                                                                                                                  
+mkdir -p "$CERT_DIR"                                                                                                                                                             
+chown luicasad:2023_barcelona $CERT_DIR                                                                                                                                          
+                                                                                                                                                                                 
+# Generar certificado                                                                                                                                                            
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \                                                                                                                            
+  -keyout "$KEY_FILE" -out "$CRT_FILE" \                                                                                                                                         
+  -subj "/C=ES/ST=Catalonia/L=Barcelona/O=42barcelona/CN=$IP"                                                                                                                     
+                                                                                                                                                                                 
+chown luicasad:2023_barcelona $KEY_FILE                                                                                                                                          
+chown luicasad:2023_barcelona $CRT_FILE                                                                                                                                          
+                                                                                                                                                                                 
+echo "Certificado SSL generado para IP: $IP"   
