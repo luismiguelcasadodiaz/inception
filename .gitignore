@@ -3,3 +3,5 @@
 secrets/*.txt
 srcs/requirements/dbserver/db_data/*
 tests/data/*
+.ash_history
+

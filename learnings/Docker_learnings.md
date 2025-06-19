@@ -6,6 +6,7 @@
 # Secrets
 Using Docker secrets requires the initialitation of `docker swarm init`.
 
+Secrets are not visible inside a Dockerfile. I discover this with dbserver healthcheck.
 
 #### Create a secret from a file
 
@@ -81,3 +82,48 @@ Reserved addresses:
 + 192.168.1.15 → Broadcast address
 
 Usable range: 192.168.1.2 → 192.168.1.14
+
+# logs sizes
+ My aim is to keep small the virtual machine harddisk size. This is why i limit log file size and number of log files to keep
+
+```yaml
+
+    logging:
+      driver: "json-file" # Use json-file for easier access if you need to debug raw logs
+      options:
+        max-size: "25600" # Keep each log file up to 25600 Bytes or "25k"
+        max-file: "3"   # Keep the 5 most recent log files      
+```
+
+To know where log file is saved we can use this command
+
+```bash
+docker inspect --format='{{.LogPath}}' inception-dbserver-1
+/var/lib/docker/containers/d80c94c4acd52cd1996443de34c589cefab23340fa148ac44da67cc9a067dfe1/d80c94c4acd52cd1996443de34c589cefab23340fa148ac44da67cc9a067dfe1-json.log
+
+```
+
+# healthcheck
+
+To be sure  dbserver is up and runnig before other containers start, a healthcheck is available in Dockerfile.
+
+But Dockerfile has not access to secrets. Dockerfile can read .ENV defined enviromental variables.
+
+I do not want to duplicate where password are kept, so i decide the creation os a healthcheck script for this pourpouse
+
+```Dockerfile
+#HEALTHCHECK --interval=10s --timeout=5s --retries=3 CMD mariadb-admin ping -u mysql --password="${DBSERVER_MSQL_PASSWORD}"-h localhost || exit 1
+#  Dockerfile does not acces secrets, only .env defined variables. These is the reason to create a healthycheck script.
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 CMD /usr/local/sbin/healthcheck.sh || exit 1
+
+```
+
+The docker-compose files of dependant containers must have the instruction `depends_on`
+
+```yaml
+    depends_on:
+      dbserver:
+        condition: service_healthy  # Ensures database server is actually ready
+```
+
+qq
