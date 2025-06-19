@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bad Request - Protocol Mismatch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #d9534f; /* Red */
+        }
+        p {
+            line-height: 1.6;
+        }
+        .suggestion {
+            margin-top: 20px;
+            font-style: italic;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>400 Bad Request - Protocol Mismatch</h1>
+        <p>We're sorry, but the request you sent was a plain HTTP request directed to an HTTPS-only port (443).</p>
+        <p>This port is configured to accept only encrypted HTTPS connections.</p>
+        <div class="suggestion">
+            <p>Please try again using <strong><code>https://</code></strong> in your browser's address bar, like this:</p>
+            <p><code>https://10.12.250.80/index.html</code></p>
+        </div>
+        <p>Thank you for your understanding.</p>
+        <p>The Inception academic project from 42 states that the NGINX container must be the sole entry point into your infrastructure, accessible only via port 443</p>
+        <p><small>NGINX Server</small></p>
+    </div>
+</body>
+</html>
