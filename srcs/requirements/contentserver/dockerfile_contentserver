@@ -14,6 +14,14 @@ RUN apk add --no-cache   php84-fpm php84-json php84-zlib php84-xml php84-xmlwrit
     php84-intl php84-bcmath php84-dom php84-mbstring php84-xmlreader && \
     rm -rf /var/cache/apk/*
 
+# system group creation "addgroup -S" 
+# Creates a group named nginx with a low GID (usually below 1000) to indicate 
+# it's used for a system service, not a human user.
+# Create a system user (withouy password, shell, home directory). "adduser -S"
+# add it to group nginx "-G nginx"    
+# This user is typically used to run daemons like the NGINX worker process, 
+# without login capabilities or user environment. 
+RUN addgroup -S nginx && adduser -S -G nginx nginx    
 # Create the web root directory
 RUN mkdir -p /www
 # Set appropriate permissions (optional, but good practice)
