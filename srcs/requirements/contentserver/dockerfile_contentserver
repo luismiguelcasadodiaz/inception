@@ -14,4 +14,19 @@ RUN apk add --no-cache   php84-fpm php84-json php84-zlib php84-xml php84-xmlwrit
     php84-intl php84-bcmath php84-dom php84-mbstring php84-xmlreader && \
     rm -rf /var/cache/apk/*
 
+# Create the web root directory
+RUN mkdir -p /www
+# Set appropriate permissions (optional, but good practice)
+RUN chown -R nginx:nginx /www # Assuming nginx user runs php-fpm, or www-data etc.
+RUN chmod -R 755 /www
+
+# Copy PHP-FPM configuration that restricts request from 192.168.1.4
+COPY www.conf /etc/php84/php-fpm.d/www.conf
+COPY index.php /www/index.php
+
 EXPOSE 9000
+CMD ["php-fpm84", "-F"]
+
+#The -F flag for php-fpm stands for "force to stay in foreground" or "no daemonize".
+#Its purpose is very similar to the daemon off; directive for Nginx, 
+# and it's particularly important in modern containerized environments like Docker.
