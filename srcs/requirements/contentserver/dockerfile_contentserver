@@ -7,7 +7,7 @@ LABEL org.label-schema.description="A Docker image running php and word server o
 LABEL org.label-schema.url="[https://github.com/luismiguelcasadodiaz/inception]"
 LABEL org. label-schema.date="May 2025"
 
-RUN apk add --no-cache   php84-fpm php84-json php84-zlib php84-xml php84-xmlwriter php84-simplexml php84-pdo php84-phar php84-openssl \
+RUN apk add --no-cache   wget unzip php84-fpm php84-json php84-zlib php84-xml php84-xmlwriter php84-simplexml php84-pdo php84-phar php84-openssl \
     php84-pdo_mysql php84-mysqli php84-session \
     php84-gd php84-iconv php84-gmp php84-zip \
     php84-curl php84-opcache php84-ctype php84-apcu \
@@ -21,16 +21,33 @@ RUN apk add --no-cache   php84-fpm php84-json php84-zlib php84-xml php84-xmlwrit
 # add it to group nginx "-G nginx"    
 # This user is typically used to run daemons like the NGINX worker process, 
 # without login capabilities or user environment. 
-RUN addgroup -S nginx && adduser -S -G nginx nginx    
+#
 # Create the web root directory
-RUN mkdir -p /www
+#
 # Set appropriate permissions (optional, but good practice)
-RUN chown -R nginx:nginx /www # Assuming nginx user runs php-fpm, or www-data etc.
-RUN chmod -R 755 /www
+# Assuming nginx user runs php-fpm, or www-data etc.
+RUN addgroup -S nginx && adduser -S -G nginx nginx && \   
+    mkdir -p /www && \
+    chown -R nginx:nginx /www  && \
+    chmod -R 755 /www
+
+# Navigate to /www
+# Download Wordress
+# Unpack it
+# Move all from    /www/wordpress/*  to /www
+# Remove the empty wordpress directory
+# Clean up downloaded archive
+RUN cd /www && \
+    wget https://wordpress.org/latest.tar.gz && \
+    tar -xzf latest.tar.gz &&\
+    mv wordpress/* /www/ &&\
+    rm -rf wordpress &&\
+    rm latest.tar.gz
+
 
 # Copy PHP-FPM configuration that restricts request from 192.168.1.4
 COPY www.conf /etc/php84/php-fpm.d/www.conf
-COPY index.php /www/index.php
+#COPY index.php /www/index.php
 
 EXPOSE 9000
 CMD ["php-fpm84", "-F"]
