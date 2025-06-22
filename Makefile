@@ -8,8 +8,10 @@ SERVICES = $(SERVICE1) $(SERVICE2) $(SERVICE3) $(SERVICE9)
 
 .PHONY: all web db content client webclean dbclean contentclean clientclean 
 # --build image if not exists and run it in detached mode (-d)
+# --also saves space. Deletes all images not used by any containers, even tagged ones.
 all:
 	docker compose -f ./srcs/docker-compose.yml up --build -d
+	docker image prune -a
 
 # Individual rules
 
