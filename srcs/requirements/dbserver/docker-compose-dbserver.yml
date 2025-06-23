@@ -17,7 +17,7 @@ services:
       - dbserver_root_password
       - dbserver_msql_password
     env_file:
-      - ../.env
+      - ../../.env
     #environment:
       #DBSERVER_ROOT_PASSWORD_FILE: /run/secrets/dbserver_root_password
       #DBSERVER_MSQL_PASSWORD_FILE: /run/secrets/dbserver_msql_password

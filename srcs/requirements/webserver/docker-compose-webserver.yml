@@ -18,7 +18,7 @@ services:
     ports:
       - "443:443"
     env_file:
-      - ../.env
+      - ../../.env
     # --- Logging Configuration ---
     logging:
       driver: "json-file" # Use json-file for easier access if you need to debug raw logs

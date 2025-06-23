@@ -17,7 +17,7 @@ services:
       dbserver:
         condition: service_healthy  # Ensures database server is actually ready
     env_file:
-      - .env
+      - ../../.env
     secrets:
       - contentserver_root_password
       - contentserver_user_password
