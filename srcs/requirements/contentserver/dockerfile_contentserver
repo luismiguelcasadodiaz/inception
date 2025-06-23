@@ -31,6 +31,7 @@ RUN addgroup -S nginx && adduser -S -G nginx nginx && \
     chown -R nginx:nginx /www  && \
     chmod -R 755 /www
 
+VOLUME /www
 # Navigate to /www
 # Download Wordress
 # Unpack it
@@ -44,6 +45,8 @@ RUN cd /www && \
     rm -rf wordpress &&\
     rm latest.tar.gz
 
+COPY contentserver_setup.sh /contentserver_setup.sh
+RUN chmod +x /contentserver_setup.sh && /contentserver_setup.sh
 
 # Copy PHP-FPM configuration that restricts request from 192.168.1.4
 COPY www.conf /etc/php84/php-fpm.d/www.conf

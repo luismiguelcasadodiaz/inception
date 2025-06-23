@@ -1,0 +1,30 @@
+#!/bin/sh
+set -ex
+
+# Function to read secret from file
+read_secret() {
+    local file="$1"
+    if [ -f "$file" ]; then
+        cat "$file"
+    fi
+}
+
+CONFIG_FILE="/www/wp-config.php"
+SAMPLE_FILE="/www/wp-config-sample.php"
+DBSERVER_MSQL_PASSWORD=$(read_secret "$DBSERVER_MSQL_PASSWORD_FILE")
+
+if [ -f "$CONFIG_FILE" ]; then
+    echo "File already exists: $CONFIG_FILE"
+    exit 0
+else
+    echo "Creating $CONFIG_FILE from sample..."
+    cp "$SAMPLE_FILE" "$CONFIG_FILE" || {
+        echo "Failed to create $CONFIG_FILE"
+        exit 1
+    }
+    sed -i "s/define( 'DB_HOST', 'localhost' );/define( 'DB_HOST', '$DATABASE_HOST' );/" /www/wp-config.php                            
+    sed -i "s/define( 'DB_NAME', 'database_name_here' );/define( 'DB_NAME', '$DATABASE_NAME' );/" /www/wp-config.php
+    sed -i "s/define( 'DB_USER', 'username_here' );/define( 'DB_USER', '$DBSERVER_MSQL_USER' );" /www/wp-config.php
+    sed -i "s/define( 'DB_PASSWORD', 'password_here' );/define( 'DB_PASSWORD', '$DBSERVER_MSQL_PASSWORD' )" /www/wp-config.php
+
+fi
