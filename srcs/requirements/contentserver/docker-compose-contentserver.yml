@@ -11,9 +11,13 @@ services:
     build:
       context: ../contentserver
       dockerfile: dockerfile_contentserver
+    volumes:
+      - ./wp_data:/www  # Maps host folder to MariaDB data directory
     depends_on:
       dbserver:
         condition: service_healthy  # Ensures database server is actually ready
+    env_file:
+      - .env
     secrets:
       - contentserver_root_password
       - contentserver_user_password

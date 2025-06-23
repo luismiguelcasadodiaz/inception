@@ -16,9 +16,11 @@ services:
     secrets:
       - dbserver_root_password
       - dbserver_msql_password
-    environment:
-      DBSERVER_ROOT_PASSWORD_FILE: /run/secrets/dbserver_root_password
-      DBSERVER_MSQL_PASSWORD_FILE: /run/secrets/dbserver_msql_password
+    env_file:
+      - ../.env
+    #environment:
+      #DBSERVER_ROOT_PASSWORD_FILE: /run/secrets/dbserver_root_password
+      #DBSERVER_MSQL_PASSWORD_FILE: /run/secrets/dbserver_msql_password
     # --- Logging Configuration ---
     logging:
       driver: "json-file" # Use json-file for easier access if you need to debug raw logs
