@@ -51,3 +51,13 @@ PHP-FPM provides features like graceful restarts (allowing updates without dropp
 + 4.- Worker Executes PHP: The worker process executes the PHP script. If an opcode cache is in use, it will use the cached version if available, otherwise, it will compile and execute the script.
 + 5.- Response Sent Back: The PHP worker sends the output (HTML, JSON, etc.) back to the web server.
 + 6.- Web Server Delivers to Browser: The web server then sends the final response to the user's browser.
+
+
+
+# php-fpm logs
+By default, PHP-FPM worker processes send their stdout and stderr to /dev/null (meaning **you wouldn't see them**). `catch_workers_output = yes` redirects this output to the main PHP-FPM error log. Since the main error log is typically sent to stderr by PHP-FPM itself when running in the foreground, this is a bridge to Docker's logging mechanism.
+
+; Log PHP errors to a specific file for this pool.
+php_admin_value[error_log] = /var/log/php-fpm84_error.log
+; Enable logging of errors.
+php_admin_flag[log_errors] = on

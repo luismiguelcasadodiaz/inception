@@ -131,3 +131,24 @@ i solved it like this
     local password=$(read_secret "$file_var")
 ```
 
+# configure /etc/hosts
+
+Inception subject says: 
+
++ You must configure your **domain name to point to your local IP address**. This domain name must be luicasad.42.fr.
+
+Despite that Alpine Linux has a `setup-hostname` command, the result does not affects /etc/hosts
+
+```bash
+/ # setup-hostname 
+Enter system hostname (fully qualified form, e.g. 'foo.example.org') [luicasad.42.fr] 
+/ # cat /etc/hosts
+127.0.0.1	luicasad.42barcelona.com luicasad localhost.localdomain localhost
+::1		localhost localhost.localdomain
+/ # 
+```
+
+Additionally the network interface i work with in the Oracle VirtualBox is bridge, so my VM gets its IP dynamically from 42's DHCP.
+
+I ask at booting time to update `/etc/hosts` with the current ip running `/etc/local.d/update_hosts.start`
+

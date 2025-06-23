@@ -126,4 +126,8 @@ The docker-compose files of dependant containers must have the instruction `depe
         condition: service_healthy  # Ensures database server is actually ready
 ```
 
-qq
+# env_file
+
+You can declare the `env_file` once in the root Compose file, and it will apply to services defined in that file only. 
+It **won’t be automatically inherited by included Compose files** unless those files also specify it.
+**Add** env_file: .env **inside each included Compose file** that uses the variables.

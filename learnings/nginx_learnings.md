@@ -7,14 +7,18 @@ That requiress a ssl certification. This is the standard instruction to create a
 
 ```bash
 mkdir -p certs
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./certs/nginx.key -out ./certs/nginx.crt -subj "/C=ES/ST=Catalonia/L=Barcelona/O=YourCampus/CN=10.12.250.80"
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./certs/nginx.key -out ./certs/nginx.crt -subj "/C=ES/ST=Catalonia/L=Barcelona/O=42barcelona.com/CN=10.12.250.80"
 ```
 
 As it requires the virtual machine IP, that is assigned by DHCP, i created a script that runs at bootime.
 
 I saved the **executable** script at `/etc/local.d/generate_cert.start` and activate it at boot time wiht `rc-update add local default`
 
+You can verify certificate content with this command
 
+```bash
+openssl x509 -in /ruta/nginx.crt -text -noout
+```
 
 
 # one preocess per container
