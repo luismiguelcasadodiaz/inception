@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Discover current static IP (excluding loopback and docker bridges)
+IP=$(ip addr show | awk '/inet / && $2 !~ /^127/ && $NF !~ /^docker/ { sub(/\/.*/, "", $2); print $2; exit }')
+
+# Discover current hostname (set during setup-alpine)
+HOSTNAME=$(hostname)
+
+# Hosts file to edit
+HOSTS_FILE="/etc/hosts"
+
+# Log
+echo "[update_hosts] Setting $HOSTNAME to point to $IP in $HOSTS_FILE"
+
+# Update or insert entry in /etc/hosts
+if grep -q "[[:space:]]$HOSTNAME" "$HOSTS_FILE"; then
+    # Replace existing line
+    sed -i "s/^[0-9.]*[[:space:]]\+$HOSTNAME\$/${IP} ${HOSTNAME}/" "$HOSTS_FILE"
+else
+    # Append new line
+    echo "${IP} ${HOSTNAME}" >> "$HOSTS_FILE"
+fi
