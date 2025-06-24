@@ -32,10 +32,10 @@ else
     rm -rf wordpress
     rm latest.tar.gz
     cp "$SAMPLE_FILE" "$CONFIG_FILE"
-    sed -i "s/define( 'DB_HOST', 'localhost' );/define( 'DB_HOST', '$DATABASE_HOST' );/" $CONFIG_FILE                    
-    sed -i "s/define( 'DB_NAME', 'database_name_here' );/define( 'DB_NAME', '$DATABASE_NAME' );/" $CONFIG_FILE         
-    sed -i "s/define( 'DB_USER', 'username_here' );/define( 'DB_USER', '$DBSERVER_MSQL_USER' );/" $CONFIG_FILE         
-    sed -i "s/define( 'DB_PASSWORD', 'password_here' );/define( 'DB_PASSWORD', '$DBSERVER_MSQL_PASSWORD' );/" $CONFIG_FILE         
+    sed -i "s/define( 'DB_HOST', 'localhost' );/define( 'DB_HOST', getenv('DATABASE_HOST') );/" $CONFIG_FILE                    
+    sed -i "s/define( 'DB_NAME', 'database_name_here' );/define( 'DB_NAME', getenv('DATABASE_NAME') );/" $CONFIG_FILE         
+    sed -i "s/define( 'DB_USER', 'username_here' );/define( 'DB_USER', getenv('DBSERVER_MSQL_USER') );/" $CONFIG_FILE         
+    sed -i "s/define( 'DB_PASSWORD', 'password_here' );/define( 'DB_PASSWORD', trim(file_get_contents('$DBSERVER_MSQL_PASSWORD_FILE')) );/" $CONFIG_FILE         
     php-fpm84 -F
 fi
 
