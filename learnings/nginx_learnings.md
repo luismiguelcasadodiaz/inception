@@ -47,3 +47,75 @@ The daemon off; directive in Nginx, especially when used in containerized enviro
 + When Nginx runs as a daemon, it typically writes a PID file to track its master process ID. In container environments, managing PID files can be tricky due to the ephemeral nature of containers and potential volume mapping complexities.
 
 + By running in the foreground, Nginx doesn't need to create a PID file, **eliminating a potential source of configuration or permission-related issues**.
+
+
+# PHP requests
+inside nginx.conf `fastcgi_pass` directive tells Nginx where to send PHP requests for processing.
+
+```conf
+# Forward requests to the contentserver container's IP and PHP-FPM port
+fastcgi_pass 192.168.1.3:9000;
+```
+
+That directive goes inside a server {} directive specifiying *.php treatment `location ~* \.php$ `
+
+You'd typically use `~*` when you want to handle file extensions or parts of a URL without worrying about the client's capitalization otherwise you use `~` only.
+
+
+```conf
+    server {
+        root /www; 
+        location ~* \.php$ {
+        # Ensure the file exists before passing to PHP-FPM
+        #try_files $uri =404;
+
+        # Forward requests to the contentserver container's IP and PHP-FPM port
+        fastcgi_pass 192.168.1.3:9000;
+
+        # Include standard FastCGI parameters
+        include fastcgi_params;
+
+
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+        }
+    }
+```
+
+Set the SCRIPT_FILENAME to the actual path in the contentserver container 
+This tells PHP-FPM the absolute path to the PHP script it needs to execute within its own container. 
+`$document_root` will be /www. $fastcgi_script_name will be the requested PHP file (e.g., /index.php).
+
+
+The fastcgi_param SCRIPT_FILENAME directive inside a location ~* \.php$ {} block is one of the **most critical pieces of configuration** for getting Nginx to work with PHP-FPM.
+
+It tells PHP-FPM (the FastCGI Process Manager) exactly which PHP script file it needs to execute for the current request.
+
+Let's break down its components and what it means:
+
+fastcgi_param: This is an Nginx directive used to **define a parameter that will be passed to the FastCGI server** (in your case, PHP-FPM). FastCGI uses these parameters (similar to environment variables) to communicate request-specific information.
+
+SCRIPT_FILENAME: This is a standard FastCGI variable name (and also an environment variable that PHP scripts commonly access via $_SERVER['SCRIPT_FILENAME']). It's expected by PHP-FPM to **specify the absolute path to the PHP script** that PHP-FPM should process.
+
+`$document_root`: This is an Nginx built-in variable. It dynamically expands to the value of the `root` directive that is active for the current request. nginx.conf has `root /www`;, so `$document_root` will evaluate to `/www`.
+
+`$fastcgi_script_name`: This is another Nginx built-in variable. It expands to the URI of the requested PHP script. For example:
+
++ If the request is /index.php, $fastcgi_script_name will be /index.php.
++ If the request is /blog/post.php, $fastcgi_script_name will be /blog/post.php.
+
+`$document_root$fastcgi_script_name`: When combined, this creates the full absolute path to the PHP script that Nginx wants PHP-FPM to execute.
+
++ For a request to https://10.12.250.80/index.php, with `$document_root = /www` and `$fastcgi_script_name = /index.php` then `SCRIPT_FILENAME` becomes `/www/index.php`
+
+### Why is this so important?
+
++ 1.- PHP-FPM Needs the File Path: Nginx itself doesn't execute PHP code. It acts as a reverse proxy, passing the request to PHP-FPM. PHP-FPM needs to know which PHP file on its own filesystem it should load and run. `SCRIPT_FILENAME` provides this crucial piece of information.
+<br>
++ 2.-Mapping Between Containers (Inception case): We have two separate containers: webserver(nginx) and contentserver(PHP-FPM). While Nginx's root directive tells Nginx where to find files if it were serving them itself, the SCRIPT_FILENAME parameter tells PHP-FPM where to find the file within its own container's file system. 
+  <br>
+    + It's vital that the path constructed by `$document_root$fastcgi_script_name` (e.g., /www/index.php) is the actual path to the PHP file **inside the PHP-FPM container**. If these paths don't align (e.g., Nginx thinks the root is /www but PHP-FPM expects files in /var/www/html), PHP-FPM will return a "No input file specified" error or similar. 
+    <br>
+    + I commented `try_files`. That avoids nginx looks for *.php files it does not have, ensuring Nginx blindly passes the request and relies on PHP-FPM to find the file at /www/index.php.
+<br>
++ 3.- Security and Correct Execution: This parameter **prevents** PHP-FPM from executing **arbitrary files** that it shouldn't. It explicitly tells it the script to run based on the request URI and the defined document root.

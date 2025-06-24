@@ -61,3 +61,26 @@ By default, PHP-FPM worker processes send their stdout and stderr to /dev/null (
 php_admin_value[error_log] = /var/log/php-fpm84_error.log
 ; Enable logging of errors.
 php_admin_flag[log_errors] = on
+
+# php listening configuration
+
+From PHP-FPM's www.conf (or other pool configs):
+
+listen =: Tells you the address (IP:Port or Unix socket path) PHP-FPM is listening on. This is its "contact point."
+
+```conf
+listen = 192.168.1.3:9000
+```
+
+listen.allowed_clients =: Tells you if there are IP restrictions on who can connect.
+
+``` conf
+listen.allowed_clients = 192.168.1.4
+```
+
+user = / group =: Tells you the system user/group PHP-FPM runs as, which needs permissions to read PHP files.
+
+``` conf
+user = nginx
+group = nginx
+```
