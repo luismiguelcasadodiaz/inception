@@ -9,9 +9,16 @@ read_secret() {
     fi
 }
 
+
 CONFIG_FILE="/www/wp-config.php"
 SAMPLE_FILE="/www/wp-config-sample.php"
 DBSERVER_MSQL_PASSWORD=$(read_secret "$DBSERVER_MSQL_PASSWORD_FILE")
+
+
+echo "DB_HOST:>$DATABASE_HOST<"
+echo "DB_NAME:>$DATABASE_NAME<"
+echo "DB_USER:>$DBSERVER_MSQL_USER<"
+echo "DB_PASSWORD:>$DBSERVER_MSQL_PASSWORD<"
 
 if [ -f "$CONFIG_FILE" ]; then
     echo "File already exists: $CONFIG_FILE"
