@@ -31,7 +31,7 @@ else
     mv wordpress/* /www/
     rm -rf wordpress
     rm latest.tar.gz
-    cp "$SAMPLE_FILE" "$CONFIG_FILE" || {
+    cp "$SAMPLE_FILE" "$CONFIG_FILE"
     sed -i "s/define( 'DB_HOST', 'localhost' );/define( 'DB_HOST', '$DATABASE_HOST' );/" $CONFIG_FILE                    
     sed -i "s/define( 'DB_NAME', 'database_name_here' );/define( 'DB_NAME', '$DATABASE_NAME' );/" $CONFIG_FILE         
     sed -i "s/define( 'DB_USER', 'username_here' );/define( 'DB_USER', '$DBSERVER_MSQL_USER' );/" $CONFIG_FILE         

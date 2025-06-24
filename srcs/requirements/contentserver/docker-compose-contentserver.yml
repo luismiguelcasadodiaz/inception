@@ -21,6 +21,7 @@ services:
     secrets:
       - contentserver_root_password
       - contentserver_user_password
+      - dbserver_msql_password
     #environment:
     #  CONTENTSERVER_ROOT_PASSWORD_FILE: /run/secrets/contentserver_root_password
     #  CONTENTSERVER_USER_PASSWORD_FILE: /run/secrets/contentserver_user_password
