@@ -10,7 +10,7 @@ services:
       context: ../dbserver
       dockerfile: dockerfile_dbserver
     volumes:
-      - ./db_data:/var/lib/mysql  # Maps host folder to MariaDB data directory
+      - ./db_data:/var/lib/mysql  # Maps host folder ./db_data to container dbserver  /var/lib/mysql directory
     ports:
       - "3306:3306"
     secrets:

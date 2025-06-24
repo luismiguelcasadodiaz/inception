@@ -12,7 +12,7 @@ services:
       context: ../contentserver
       dockerfile: dockerfile_contentserver
     volumes:
-      - ./wp_data:/www  # Maps host folder to MariaDB data directory
+      - ./wp_data:/www  # Maps host folder to container contentserver /www directory
     depends_on:
       dbserver:
         condition: service_healthy  # Ensures database server is actually ready
