@@ -30,3 +30,8 @@ services:
       options:
         max-size: "3m" # Keep each log file up to 3MB
         max-file: "3"   # Keep the 3 most recent log files
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "9000"]
+      interval: 10s
+      timeout: 3s
+      retries: 5

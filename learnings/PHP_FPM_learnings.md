@@ -75,8 +75,9 @@ listen = 192.168.1.3:9000
 listen.allowed_clients =: Tells you if there are IP restrictions on who can connect.
 
 ``` conf
-listen.allowed_clients = 192.168.1.4
+listen.allowed_clients = 127.0.0.1, 192.168.1.4
 ```
+Added ip `127.0.0.1` for healthchecking 
 
 user = / group =: Tells you the system user/group PHP-FPM runs as, which needs permissions to read PHP files.
 
