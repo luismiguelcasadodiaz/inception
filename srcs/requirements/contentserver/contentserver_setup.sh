@@ -26,6 +26,7 @@ if [ -f "$CONFIG_FILE" ]; then
 else
     echo "Installing Wordpress. File does not exist: $CONFIG_FILE"
     cd /www
+    rm -rf *
     wget https://wordpress.org/latest.tar.gz
     tar -xzf latest.tar.gz
     mv wordpress/* /www/

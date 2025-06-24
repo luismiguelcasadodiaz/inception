@@ -61,7 +61,16 @@ Change `sed` to use the built-in funcion like this
 sed -i "s/define( 'DB_HOST', 'localhost' );/define( 'DB_HOST', getenv('DATABASE_HOST') );/" $CONFIG_FILE                    
 sed -i "s/define( 'DB_NAME', 'database_name_here' );/define( 'DB_NAME', getenv('DATABASE_NAME') );/" $CONFIG_FILE         
 sed -i "s/define( 'DB_USER', 'username_here' );/define( 'DB_USER', getenv('DBSERVER_MSQL_USER') );/" $CONFIG_FILE         
-sed -i "s/define( 'DB_PASSWORD', 'password_here' );/define( 'DB_PASSWORD', trim(file_get_contents('$DBSERVER_MSQL_PASSWORD_FILE')) );/" $CONFIG_FILE         
+sed -i "s|define( 'DB_PASSWORD', 'password_here' );|define( 'DB_PASSWORD', trim(file_get_contents('$DBSERVER_MSQL_PASSWORD_FILE')) );|" $CONFIG_FILE         
 ```
 
+Note that last `search` commnad for `sed` has pipe (`|`) instead of slash(`/`) as a delimiter cause  `$DBSERVER_MSQL_PASSWORD_FILE` is a path
+
 and you will get
+
+```conf
+define( 'DB_NAME', getenv('DATABASE_NAME') );
+define( 'DB_USER', getenv('DBSERVER_MSQL_USER') );
+define( 'DB_PASSWORD', trim(file_get_contents('/run/secrets/dbserver_msql_password')) );
+define( 'DB_HOST', getenv('DATABASE_HOST') );     
+```
