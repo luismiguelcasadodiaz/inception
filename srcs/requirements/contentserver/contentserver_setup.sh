@@ -25,13 +25,22 @@ if [ -f "$CONFIG_FILE" ]; then
     php-fpm84 -F
 else
     echo "Installing Wordpress. File does not exist: $CONFIG_FILE"
+    # Navigate to /www
     cd /www
     rm -rf *
+    # Download Wordress
     wget https://wordpress.org/latest.tar.gz
+    # Unpack it
     tar -xzf latest.tar.gz
+    # Move all from    /www/wordpress/*  to /www
     mv wordpress/* /www/
+    # Remove the empty wordpress directory
     rm -rf wordpress
+    # Clean up downloaded archive
     rm latest.tar.gz
+    # recover index.php
+    cp /opt/index.php .
+    # duplicate wp-config.php
     cp "$SAMPLE_FILE" "$CONFIG_FILE"
     sed -i "s/define( 'DB_HOST', 'localhost' );/define( 'DB_HOST', getenv('DATABASE_HOST') );/" $CONFIG_FILE                    
     sed -i "s/define( 'DB_NAME', 'database_name_here' );/define( 'DB_NAME', getenv('DATABASE_NAME') );/" $CONFIG_FILE         

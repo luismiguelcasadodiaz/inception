@@ -32,12 +32,7 @@ RUN addgroup -S nginx && adduser -S -G nginx nginx && \
     chmod -R 755 /www
 
 VOLUME /www
-# Navigate to /www
-# Download Wordress
-# Unpack it
-# Move all from    /www/wordpress/*  to /www
-# Remove the empty wordpress directory
-# Clean up downloaded archive
+
 
 
 COPY contentserver_setup.sh /contentserver_setup.sh
@@ -45,7 +40,8 @@ RUN chmod +x /contentserver_setup.sh
 
 # Copy PHP-FPM configuration that restricts request from 192.168.1.4
 COPY www.conf /etc/php84/php-fpm.d/www.conf
-#COPY index.php /www/index.php
+COPY php-fpm.conf /etc/php84/php-fpm.conf
+COPY index.php /opt/index.php
 
 EXPOSE 9000
 ENTRYPOINT ["/contentserver_setup.sh"]
