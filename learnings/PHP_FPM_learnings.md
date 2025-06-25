@@ -85,9 +85,10 @@ Instead of 192.168.1.3, that is Fix IP assigned by docker-compose i configured t
 listen.allowed_clients =: Tells you if there are IP restrictions on who can connect.
 
 ``` conf
-listen.allowed_clients = 127.0.0.1, 192.168.1.4
+listen.allowed_clients = 127.0.0.1,192.168.1.4
 ```
-Added ip `127.0.0.1` for healthchecking 
+Added ip `127.0.0.1` for healthchecking. 
+###### ATTENTION HERE. No whitespaces after comma allowed in this directive.
 
 user = / group =: Tells you the system user/group PHP-FPM runs as, which needs permissions to read PHP files.
 
@@ -95,3 +96,4 @@ user = / group =: Tells you the system user/group PHP-FPM runs as, which needs p
 user = nginx
 group = nginx
 ```
+

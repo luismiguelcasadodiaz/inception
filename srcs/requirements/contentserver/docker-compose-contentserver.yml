@@ -22,6 +22,18 @@ services:
       - contentserver_root_password
       - contentserver_user_password
       - dbserver_msql_password
+    # Specify the target (inside container path), uid, and gid
+    deploy: # This applies to swarm mode, but similar concepts for simple compose
+      secrets:
+        - source: dbserver_msql_password
+          target: /run/secrets/dbserver_msql_password
+          uid: '0' # root
+          gid: '101' # Or whatever GID your 'nginx' user uses.
+                      # You need to find the GID of the 'nginx' group inside inception-contentserver-1.
+                      # To find it: docker exec inception-contentserver-1 id -g nginx
+                      # Common Nginx/PHP-FPM image GIDs are 33, 82, or 1001.
+          mode: 0440 # Read-only for owner (root) and group (nginx), no access for others.
+                     # This is more secure than 0770 you had.
     #environment:
     #  CONTENTSERVER_ROOT_PASSWORD_FILE: /run/secrets/contentserver_root_password
     #  CONTENTSERVER_USER_PASSWORD_FILE: /run/secrets/contentserver_user_password
