@@ -1,0 +1,28 @@
+FROM alpine:3.21.3
+
+LABEL org.label-schema.schema-version="1.0"
+LABEL org.label-schema.maintainer="Luis Miguel Casado Díaz <luicasad@student.42barcelona.com>"
+LABEL org.label-schema.version="4.8.1"
+LABEL org.label-schema.description="Adminer Docker image running on Alpine Linux."
+LABEL org.label-schema.url="https://github.com/luismiguelcasadodiaz/inception"
+LABEL org.label-schema.date="June 2025"
+
+# Install Adminer dependencies and PHP with required extensions
+RUN apk add --no-cache php php-session php-mysqli php-pdo php-pdo_mysql php-mbstring php-openssl lighttpd curl
+
+# Configure lighttpd to serve Adminer
+RUN mkdir -p /var/www/localhost/htdocs \
+    && curl -sSL https://www.adminer.org/latest.php -o /var/www/localhost/htdocs/index.php \
+    && chown -R lighttpd:lighttpd /var/www/localhost/htdocs
+
+COPY lighttpd.conf /etc/lighttpd/lighttpd.conf
+
+# Healthcheck script for Adminer
+COPY healthcheck.sh /usr/local/sbin/healthcheck.sh
+RUN chmod +x /usr/local/sbin/healthcheck.sh
+
+EXPOSE 80
+
+ENTRYPOINT ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]
+
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 CMD /usr/local/sbin/healthcheck.sh || exit 1
