@@ -2,7 +2,7 @@
 SERVICE1 = webserver
 SERVICE2 = dbserver
 SERVICE3 = contentserver
-SERVICE9 = client
+SERVICE9 = adminer
 SERVICES = $(SERVICE1) $(SERVICE2) $(SERVICE3) $(SERVICE9)
 
 
