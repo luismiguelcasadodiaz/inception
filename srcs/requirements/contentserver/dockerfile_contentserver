@@ -31,8 +31,7 @@ RUN apk add --no-cache   wget unzip php84-fpm php84-json php84-zlib php84-xml ph
 RUN addgroup -S nginx && adduser -S -G nginx nginx && \   
     mkdir -p /www && \
     chown -R nginx:nginx /www  && \
-    chmod -R 755 /www && \
-    addgroup nginx root
+    chmod -R 755 /www
 
 VOLUME /www
 
