@@ -96,4 +96,13 @@ user = / group =: Tells you the system user/group PHP-FPM runs as, which needs p
 user = nginx
 group = nginx
 ```
+# workers and enviroment variables
 
+The default configuration is that php-fpm starts workers with a clear environment.
+that Prevents arbitrary environment variables from reaching FPM worker processes by clearing the environment in workers before env vars specified in this
+pool configuration are added. Setting to "no" will make all environment variables available to PHP code via getenv(), `$_ENV` and `$_SERVER`.
+ 
+
+```conf
+clear_env = no
+```
