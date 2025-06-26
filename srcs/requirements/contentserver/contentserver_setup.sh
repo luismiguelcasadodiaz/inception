@@ -40,12 +40,17 @@ else
     rm latest.tar.gz
     # recover index.php
     cp /opt/index.php .
+    # Inside entrypoint or /etc/local.d/secret_copy.start
+    cp $DBSERVER_MSQL_PASSWORD_FILE /tmp/db_password
+    chown root:nginx /tmp/db_password
+    chmod 640 /tmp/db_password
+
     # duplicate wp-config.php
     cp "$SAMPLE_FILE" "$CONFIG_FILE"
     sed -i "s/define( 'DB_HOST', 'localhost' );/define( 'DB_HOST', getenv('DATABASE_HOST') );/" $CONFIG_FILE                    
     sed -i "s/define( 'DB_NAME', 'database_name_here' );/define( 'DB_NAME', getenv('DATABASE_NAME') );/" $CONFIG_FILE         
     sed -i "s/define( 'DB_USER', 'username_here' );/define( 'DB_USER', getenv('DBSERVER_MSQL_USER') );/" $CONFIG_FILE         
-    sed -i "s|define( 'DB_PASSWORD', 'password_here' );|define( 'DB_PASSWORD', trim(file_get_contents('$DBSERVER_MSQL_PASSWORD_FILE')) );|" $CONFIG_FILE         
+    sed -i "s|define( 'DB_PASSWORD', 'password_here' );|define( 'DB_PASSWORD', trim(file_get_contents('/tmp/db_password')) );|" $CONFIG_FILE         
     php-fpm84 -F
 fi
 

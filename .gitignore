@@ -2,6 +2,7 @@
 *.iso.sha256
 secrets/*.txt
 srcs/requirements/dbserver/db_data/*
+srcs/requirements/contentserver/wp_data/*
 srcs/requirements/webserver/certs/*
 tests/data/*
 .ash_history
