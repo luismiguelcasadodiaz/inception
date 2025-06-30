@@ -1,6 +1,7 @@
 services:
   contentserver:
     #command: echo "I'm running ${COMPOSE_PROJECT_NAME}/contentserver"
+    container_name: contentserver
     image: contentserver # EL nombre de la imagen debe coincidir con el nombre del servicio
     networks:
       inception_net:

@@ -1,6 +1,7 @@
 services:
   dbserver:
     command: echo "I'm running ${COMPOSE_PROJECT_NAME}/webserver"
+    container_name: dbserver
     image: dbserver # EL nombre de la imagen debe coincidir con el nombre del servicio
     networks:
       inception_net:
