@@ -6,6 +6,8 @@ services:
     networks:
       inception_net:
         ipv4_address: 192.168.1.2  # Fixed IP
+        aliases:
+          - in_net
     restart: always
     build:
       context: ../dbserver

@@ -8,8 +8,6 @@ include:
 
 networks:
   inception_net:
-    aliases:
-      - in_net
     driver: bridge
     ipam:
       config:
@@ -24,11 +22,6 @@ secrets:
     file: ../../secrets/contentserver_root_password.txt
   contentserver_user_password:
     file: ../../secrets/contentserver_user_password.txt
-
-
-
-networks:
-  inception_net:
 
 
 #secrets:
