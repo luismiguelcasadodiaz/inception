@@ -153,6 +153,13 @@ eafa4d1a3023   webserver       "/usr/sbin/nginx -c …"   35 seconds ago   Up 11
 5dc881e03c0e   adminerserver   "lighttpd -D -f /etc…"   16 hours ago     Up 32 seconds (unhealthy)   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp     inception-adminerserver-1
 ```
 
+It is possible the customization of container names using the docker compose instruction `container_name`
+
+```conf 
+webserver:                        #Service name
+    container_name: webserver     #Container name
+    image: webserver              #Image name
+```
 
 
 ```bash
@@ -163,3 +170,16 @@ ece86cb0a76a   contentserver   "/contentserver_setu…"   4 minutes ago   Up 4 m
 baf676929a0e   adminerserver   "lighttpd -D -f /etc…"   4 minutes ago   Up 4 minutes (unhealthy)   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp     adminerserver
 917e1d5ff1a4   dbserver        "/usr/local/sbin/doc…"   4 minutes ago   Up 4 minutes (healthy)     0.0.0.0:3306->3306/tcp, :::3306->3306/tcp   dbserver
 ```
+
+It is also possible the customization of network  names using the docker compose instruction `name` together with `networks` instuctions.
+
+``` conf
+
+networks:
+  inception_net:
+    name: thenet
+```
+
+
+In this way i converted `inception-contentserver-1.inception_inception_net` into `contentserver.thenet`
+
