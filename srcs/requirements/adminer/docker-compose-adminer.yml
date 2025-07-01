@@ -1,5 +1,6 @@
 services:
   adminerserver:
+    container_name: adminerserver
     image: adminerserver
     build:
       context: ../adminer
