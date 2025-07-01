@@ -8,10 +8,12 @@ include:
 
 networks:
   inception_net:
+    name: thenet
     driver: bridge
     ipam:
       config:
         - subnet: 192.168.1.0/28  # Define the IP range
+
 
 secrets:
   dbserver_root_password:
