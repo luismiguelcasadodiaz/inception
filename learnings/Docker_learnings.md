@@ -131,3 +131,35 @@ The docker-compose files of dependant containers must have the instruction `depe
 You can declare the `env_file` once in the root Compose file, and it will apply to services defined in that file only. 
 It **won’t be automatically inherited by included Compose files** unless those files also specify it.
 **Add** env_file: .env **inside each included Compose file** that uses the variables.
+
+
+# Long container names
+
+Docker Compose generates container and network names using this pattern:
+
+```conf
+<project_name>-<service_name>-<index>.<network_name>
+```
+
+
+Host 'inception-contentserver-1.inception_inception_net' is not allowed to connect to this MariaDB server
+
+```bash
+luicasad:~/inception$ docker ps
+CONTAINER ID   IMAGE           COMMAND                  CREATED          STATUS                      PORTS                                       NAMES
+eafa4d1a3023   webserver       "/usr/sbin/nginx -c …"   35 seconds ago   Up 11 seconds               0.0.0.0:443->443/tcp, :::443->443/tcp       inception-webserver-1
+6833961d5c0e   contentserver   "/contentserver_setu…"   36 seconds ago   Up 22 seconds (healthy)     0.0.0.0:9000->9000/tcp, :::9000->9000/tcp   inception-contentserver-1
+9b1135377e0f   dbserver        "/usr/local/sbin/doc…"   38 seconds ago   Up 33 seconds (healthy)     0.0.0.0:3306->3306/tcp, :::3306->3306/tcp   inception-dbserver-1
+5dc881e03c0e   adminerserver   "lighttpd -D -f /etc…"   16 hours ago     Up 32 seconds (unhealthy)   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp     inception-adminerserver-1
+```
+
+
+
+```bash
+luicasad:~/inception$ docker ps
+CONTAINER ID   IMAGE           COMMAND                  CREATED         STATUS                     PORTS                                       NAMES
+fc35e7e5bcd0   webserver       "/usr/sbin/nginx -c …"   4 minutes ago   Up 4 minutes               0.0.0.0:443->443/tcp, :::443->443/tcp       webserver
+ece86cb0a76a   contentserver   "/contentserver_setu…"   4 minutes ago   Up 4 minutes (healthy)     0.0.0.0:9000->9000/tcp, :::9000->9000/tcp   contentserver
+baf676929a0e   adminerserver   "lighttpd -D -f /etc…"   4 minutes ago   Up 4 minutes (unhealthy)   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp     adminerserver
+917e1d5ff1a4   dbserver        "/usr/local/sbin/doc…"   4 minutes ago   Up 4 minutes (healthy)     0.0.0.0:3306->3306/tcp, :::3306->3306/tcp   dbserver
+```

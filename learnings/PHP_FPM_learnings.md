@@ -106,3 +106,11 @@ pool configuration are added. Setting to "no" will make all environment variable
 ```conf
 clear_env = no
 ```
+
+
+
+[Pdo_mysql]                        
+; Default socket name for local MySQL connects.  If empty, uses the built-in
+; MySQL defaults.                                   
+pdo_mysql.default_socket=  
+pdo_mysql.default_socket=   
