@@ -83,7 +83,7 @@ if [ ! -d /var/lib/mysql/mysql ]; then
     echo "3.-MariaDB server up and running temporally as user=root with PID=$mariadb_pid"
     # Set passwords using the function
     #mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$DBSERVER_ROOT_PASSWORD';"
-    mariadb -u root -e "CREATE DATABASE IF NOT EXISTS '$DATABASE_NAME';" -S /run/mysqld/mysqld.sock
+    mariadb -u root -e "CREATE DATABASE IF NOT EXISTS \\`$DATABASE_NAME\\`;" -S /run/mysqld/mysqld.sock
 
 
     set_mysql_password "$DBSERVER_MSQL_USER" "$DBSERVER_MSQL_PASSWORD_FILE" "$MYSQL_PASSWORD" "contentserver.thenet"
