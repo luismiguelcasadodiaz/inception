@@ -86,7 +86,7 @@ if [ ! -d /var/lib/mysql/mysql ]; then
     mariadb -u root -e "CREATE DATABASE IF NOT EXISTS '$DATABASE_NAME';" -S /run/mysqld/mysqld.sock
 
 
-    set_mysql_password "$DBSERVER_MSQL_USER" "$DBSERVER_MSQL_PASSWORD_FILE" "$MYSQL_PASSWORD" "192.168.1.%"
+    set_mysql_password "$DBSERVER_MSQL_USER" "$DBSERVER_MSQL_PASSWORD_FILE" "$MYSQL_PASSWORD" "contentserver.thenet"
     echo "4.-MariaDB mysql user password settled"
 
     set_mysql_password "root" "$DBSERVER_ROOT_PASSWORD_FILE" "$MYSQL_ROOT_PASSWORD"
