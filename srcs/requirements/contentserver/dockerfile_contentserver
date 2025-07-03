@@ -1,3 +1,12 @@
+# --- WP-CLI Installation ---
+# This uses a multi-stage build to keep the final image clean.
+# The first stage downloads WP-CLI using wget.
+FROM alpine:3.21.3 AS wp_cli_downloader
+WORKDIR /tmp
+RUN apk add --no-cache wget \ # Install wget to download the phar file
+    && wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x wp-cli.phar
+
 FROM alpine:3.21.3
 
 LABEL org.label-schema.schema-version = "1.0"
@@ -13,6 +22,10 @@ RUN apk add --no-cache   wget unzip php84-fpm php84-json php84-zlib php84-xml ph
     php84-curl php84-opcache php84-ctype php84-apcu \
     php84-intl php84-bcmath php84-dom php84-mbstring php84-xmlreader && \
     rm -rf /var/cache/apk/*
+
+# Copy WP-CLI from the downloader stage to the final image's /usr/local/bin
+# and renames wp-cli.phar as wp
+COPY --from=wp_cli_downloader /tmp/wp-cli.phar /usr/local/bin/wp
 
 # system group creation "addgroup -S" 
 # Creates a group named nginx with a low GID (usually below 1000) to indicate 

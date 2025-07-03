@@ -13,7 +13,8 @@ read_secret() {
 CONFIG_FILE="/www/wp-config.php"
 SAMPLE_FILE="/www/wp-config-sample.php"
 DBSERVER_MSQL_PASSWORD=$(read_secret "$DBSERVER_MSQL_PASSWORD_FILE")
-
+CONTENTSERVER_ROOT_PASSWORD=$(read_secret "$CONTENTSERVER_ROOT_PASSWORD_FILE")
+CONTENTSERVER_USER_PASSWORD=$(read_secret "$CONTENTSERVER_USER_PASSWORD_FILE")
 
 echo "DB_HOST:>$DATABASE_HOST<"
 echo "DB_NAME:>$DATABASE_NAME<"
@@ -52,6 +53,16 @@ else
     sed -i "s/define( 'DB_USER', 'username_here' );/define( 'DB_USER', getenv('DBSERVER_MSQL_USER') );/" $CONFIG_FILE         
     sed -i "s|define( 'DB_PASSWORD', 'password_here' );|define( 'DB_PASSWORD', trim(file_get_contents('/tmp/db_password')) );|" $CONFIG_FILE        
     sed -i "s|define( 'WP_DEBUG', false );|define( 'WP_DEBUG', true );|" $CONFIG_FILE    
+    wp --allow-root core install \
+        --url="${NGINX_PROXY_URL}" \
+        --title="${WP_TITLE}" \
+        --admin_user="${CONTENTSERVER_ROOT}" \
+        --admin_password="${CONTENTSERVER_ROOT_PASSWORD}" \
+        --admin_email="${CONTENTSERVER_ROOT_MAIL}" \
+        --skip-email # Skips sending an installation email, useful in dev environments
+    wp --allow-root user create "${CONTENTSERVER_USER}" "${CONTENTSERVER_USER_MAIL}" \
+            --user_pass="${CONTENTSERVER_USER_PASSWORD}" \
+            --role=subscriber # user will have 'Subscriber' role
     php-fpm84 -F
 fi
 

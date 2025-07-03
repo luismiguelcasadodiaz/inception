@@ -20,3 +20,6 @@ else
     # Append new line
     echo "${IP} ${HOSTNAME}" >> "$HOSTS_FILE"
 fi
+
+# Create new enviromental variable 
+export NGINX_PROXY_URL="https://${IP}"
