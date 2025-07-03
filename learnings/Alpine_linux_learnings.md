@@ -152,3 +152,70 @@ Additionally the network interface i work with in the Oracle VirtualBox is bridg
 
 I ask at booting time to update `/etc/hosts` with the current ip running `/etc/local.d/update_hosts.start`
 
+# SQL syntax and /bin/sh
+
+Blending enviroment variables with SQL sentences created at runtime was not straight.
+
+My **first approach** inside dbserver's  `docker-entrypoint.sh` was:
+
+```sh
+mariadb -u root -e "CREATE DATABASE IF NOT EXISTS '$DATABASE_NAME';" -S /run/mysqld/mysqld.sock
+```
+
+That expanded and behavied like this
+```sh 
+mariadb -u root -e 'CREATE DATABASE IF NOT EXISTS '"'"'WORDPRESS'"'"';' -S /run/mysqld/mysqld.sock
+--------------
+CREATE DATABASE IF NOT EXISTS 'WORDPRESS'
+--------------
+ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''WORDPRESS'' at line 1
+```
+Using single quotes ('WORDPRESS') makes MariaDB interpret "WORDPRESS" as a string literal, not a database name. I cannot create a database with a string literal as its name.
+
+In SQL:
+
++ Single quotes (') are used to delimit string literals (e.g., 'hello world'). You use these for data values.
+
++ Backticks (`) are used to delimit identifiers (like database names, table names, column names) when those identifiers contain special characters, spaces, or are reserved keywords.
+
+My **second approach** was
+
+
+```sh
+mariadb -u root -e "CREATE DATABASE IF NOT EXISTS `$DATABASE_NAME`;" -S /run/mysqld/mysqld.sock
+```
+
+and the error inside dbserver's  `docker-entrypoint.sh` changed to the error message:
+
+```sh
+/usr/local/sbin/docker-entrypoint.sh: line 60: WORDPRESS: not found
++ mariadb -u root -e 'CREATE DATABASE IF NOT EXISTS ;' -S /run/mysqld/mysqld.sock
+```
+
+
+The reason behind this change was the fact that in shell scripting, when you wrap a command in backticks `command`, the shell:
++ Executes the command inside the backticks.
++ Captures the output of that command.
++ Substitutes the backtick expression with that output.
+
+in such a way that 
+```sh
+echo "Today is: `date`"
+```
+becomes 
+```sh
+Today is: Fri Jun 28 12:34:56 UTC 2024
+```
+
+There is not `wordpress` command in `/bin/sh`'s path
+
+
+The Solution: Escaping the Backticks for Literal Use
+
+You need the backticks to be passed literally to the mariadb command for SQL, not interpreted by the shell for command substitution. To do this, you must escape the backticks with a backslash when they are inside double quotes.
+
+
+
+```sh
+mariadb -u root -e "CREATE DATABASE IF NOT EXISTS \`$DATABASE_NAME\`;" -S /run/mysqld/mysqld.sock
+```

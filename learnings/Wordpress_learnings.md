@@ -95,4 +95,14 @@ cp $DBSERVER_MSQL_PASSWORD_FILE /tmp/db_password
 chown root:nginx /tmp/db_password
 chmod 640 /tmp/db_password
 ```
+# wp-admin/install.php
 
+It is the first script executed by wordpress. That implies a manual intervention of user we want to avoid.
+
+Wordpress has a utility that automatices the installation process. wp-cli.
+
+```Dockerfile
+RUN apk add --no-cache wget \ # Install wget to download the phar file
+    && wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x wp-cli.phar
+```
