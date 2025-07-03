@@ -59,10 +59,15 @@ else
         --admin_user="${CONTENTSERVER_ROOT}" \
         --admin_password="${CONTENTSERVER_ROOT_PASSWORD}" \
         --admin_email="${CONTENTSERVER_ROOT_MAIL}" \
-        --skip-email # Skips sending an installation email, useful in dev environments
+        --skip-email 2>&1 | tee /dev/stderr
+        # Skips sending an installation email, useful in dev environments
+    
+    # Added tee for debug
+    # user will have 'Subscriber' role
     wp --allow-root user create "${CONTENTSERVER_USER}" "${CONTENTSERVER_USER_MAIL}" \
             --user_pass="${CONTENTSERVER_USER_PASSWORD}" \
-            --role=subscriber # user will have 'Subscriber' role
+            --role=subscriber 2>&1 | tee /dev/stderr 
+            
     php-fpm84 -F
 fi
 
