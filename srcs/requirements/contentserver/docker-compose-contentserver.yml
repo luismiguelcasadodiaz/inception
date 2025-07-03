@@ -14,8 +14,10 @@ services:
     build:
       context: ../contentserver
       dockerfile: dockerfile_contentserver
+    #- ./wp_data:/www  # Maps host folder to container contentserver /www directory
     volumes:
-      - ./wp_data:/www  # Maps host folder to container contentserver /www directory
+      - /home/luicasad/data/wp:/www  # Maps host folder to container contentserver /www directory
+
     depends_on:
       dbserver:
         condition: service_healthy  # Ensures database server is actually ready

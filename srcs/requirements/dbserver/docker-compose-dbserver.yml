@@ -12,8 +12,9 @@ services:
     build:
       context: ../dbserver
       dockerfile: dockerfile_dbserver
+    #- ./db_data:/var/lib/mysql  # Maps host folder ./db_data to container dbserver  /var/lib/mysql directory
     volumes:
-      - ./db_data:/var/lib/mysql  # Maps host folder ./db_data to container dbserver  /var/lib/mysql directory
+      - /home/luicasad/data/db:/var/lib/mysql  # Maps host folder ./db_data to container dbserver  /var/lib/mysql directory
     ports:
       - "3306:3306"
     secrets:
