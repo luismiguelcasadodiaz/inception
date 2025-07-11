@@ -17,6 +17,7 @@ all:
 
 
 web:
+	cp ../data/certs/* src/requirements/webserver
 	docker compose -f ./srcs/docker-compose.yml build webserver
 webclean:
 	docker image rm $(SERVICE1)

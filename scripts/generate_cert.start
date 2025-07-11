@@ -25,7 +25,10 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
                                                                                                                                                                                  
 chown luicasad:2023_barcelona $KEY_FILE                                                                                                                                          
 chown luicasad:2023_barcelona $CRT_FILE                                                                                                                                          
-                                                                                                                                                                                 
+
+       
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Certificado SSL generado para IP: $IP" >> $LOGFILE 2>&1
+                                                                                                                                               
 echo "Certificado SSL generado para IP: $IP"
 
 echo "$ luicasad.42.fr" | sudo tee -a /etc/hosts
