@@ -10,6 +10,7 @@ SERVICES = $(SERVICE1) $(SERVICE2) $(SERVICE3) $(SERVICE9)
 # --build image if not exists and run it in detached mode (-d)
 # --also saves space. Deletes all images not used by any containers, even tagged ones.
 all:
+	cp ../data/certs/* srcs/requirements/webserver
 	docker compose -f ./srcs/docker-compose.yml up --build -d
 	docker image prune -a
 
@@ -17,7 +18,7 @@ all:
 
 
 web:
-	cp ../data/certs/* src/requirements/webserver
+	cp ../data/certs/* srcs/requirements/webserver
 	docker compose -f ./srcs/docker-compose.yml build webserver
 webclean:
 	docker image rm $(SERVICE1)
