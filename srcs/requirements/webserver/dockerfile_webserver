@@ -10,8 +10,8 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 # THESE LINES COPY CERTIFICATES ......
 RUN mkdir -p /etc/nginx/ssl # Create a directory inside the container for the certs
-COPY certs/nginx.crt /etc/nginx/ssl/nginx.crt
-COPY certs/nginx.key /etc/nginx/ssl/nginx.key
+COPY ../data/certs/nginx.crt /etc/nginx/ssl/nginx.crt
+COPY ../data/certs/nginx.key /etc/nginx/ssl/nginx.key
 # ---------------------------------------------
 
 EXPOSE 443
