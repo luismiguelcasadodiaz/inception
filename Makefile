@@ -11,6 +11,8 @@ SERVICES = $(SERVICE1) $(SERVICE2) $(SERVICE3) $(SERVICE9)
 # --also saves space. Deletes all images not used by any containers, even tagged ones.
 all:
 	cp ../data/certs/* srcs/requirements/webserver
+	mkdir -p /home/luicasad/data/db
+	mkdir -p /home/luicasad/data/wp
 	docker compose -f ./srcs/docker-compose.yml up --build -d
 	docker image prune -a
 
