@@ -14,7 +14,7 @@ services:
       dockerfile: dockerfile_dbserver
     #- ./db_data:/var/lib/mysql  # Maps host folder ./db_data to container dbserver  /var/lib/mysql directory
     volumes:
-      - /home/luicasad/data/db:/var/lib/mysql  # Maps host folder ./db_data to container dbserver  /var/lib/mysql directory
+      - db_data:/var/lib/mysql  # Maps host folder ./db_data to container dbserver  /var/lib/mysql directory
     ports:
       - "3306:3306"
     secrets:

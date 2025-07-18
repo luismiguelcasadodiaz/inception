@@ -14,6 +14,19 @@ networks:
       config:
         - subnet: 192.168.1.0/28  # Define the IP range
 
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: {$USER_HOME_DIR}/data/db
+      o: bind
+  wp_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: {$USER_HOME_DIR}/data/wp
+      o: bind
 
 secrets:
   dbserver_root_password:

@@ -183,3 +183,21 @@ networks:
 
 In this way i converted `inception-contentserver-1.inception_inception_net` into `contentserver.thenet`
 
+# Persitant volumes
+
+
+```yaml
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/luicasad/data/db
+      o: bind
+  wp_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/luicasad/data/db
+      o: bind
+```
