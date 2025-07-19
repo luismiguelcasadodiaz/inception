@@ -119,3 +119,6 @@ SCRIPT_FILENAME: This is a standard FastCGI variable name (and also an environme
     + I commented `try_files`. That avoids nginx looks for *.php files it does not have, ensuring Nginx blindly passes the request and relies on PHP-FPM to find the file at /www/index.php.
 <br>
 + 3.- Security and Correct Execution: This parameter **prevents** PHP-FPM from executing **arbitrary files** that it shouldn't. It explicitly tells it the script to run based on the request URI and the defined document root.
+
+### location blocks order matters
+The order of your location blocks for static files, PHP, and the general fallback 
