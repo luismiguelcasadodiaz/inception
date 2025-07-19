@@ -26,6 +26,7 @@ apk add make
 apk add jq
 
 # Instalamos las virtualbox-guest-additions para que funcione la carpeta compartida
+# Instalamos las virtualbox-guest-additions-x11 para que funcione el clibboard
 apk add virtualbox-guest-additions
 rc-update add virtualbox-guest-additions default
 rc-service virtualbox-guest-additions start

@@ -459,3 +459,21 @@ rc-service udev start
 rc-service dbus start
 ```
 
+### 6. Cliboard
+
++ Step 1: In the VirtualBox settings for the virtual machine, in general/Advanced Ensure Shared Clipboard is set to Bidireccional
+
++ step 2: install additions that support x11.
+
+```sh
+apk add virtualbox-guest-additions-x11
+```
+
++ Step 2: modify  ~/.xinitrc with:
+
+Launch before opening openbox-session the clipboard in the background
+
+```sh
+VBoxClient --clipboard &
+exec openbox-session
+```
