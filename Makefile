@@ -15,7 +15,7 @@ all:
 	cp ../data/certs/* srcs/requirements/webserver
 	mkdir -p /home/luicasad/data/db
 	mkdir -p /home/luicasad/data/wp
-	docker --env-file srcs/.env compose -f srcs/docker-compose.yml up --build -d
+	docker compose --project-directory srcs -f srcs/docker-compose.yml up --build -d
 	docker image prune -a
 	
 
@@ -25,22 +25,22 @@ all:
 
 web:
 	cp ../data/certs/* srcs/requirements/webserver
-	docker --env-file srcs/.env compose -f srcs/docker-compose.yml build webserver
+	docker compose --project-directory srcs -f srcs/docker-compose.yml build webserver
 webclean:
 	docker image rm $(SERVICE1)
 
 db:
-	docker --env-file srcs/.env compose -f srcs/docker-compose.yml build dbserver
+	docker compose --project-directory srcs -f srcs/docker-compose.yml build dbserver
 dbclean:
 	docker image rm $(SERVICE2)
 
 content:
-	docker --env-file srcs/.env compose -f srcs/docker-compose.yml build contentserver
+	docker compose --project-directory srcs -f srcs/docker-compose.yml build contentserver
 contentclean:
 	docker image rm $(SERVICE3)
 
 client:
-	docker --env-file srcs/.env compose -f srcs/docker-compose.yml build client
+	docker compose --project-directory srcs -f srcs/docker-compose.yml build client
 clientclean:
 	docker image rm $(SERVICE9)
 
@@ -48,19 +48,19 @@ clientclean:
 .PHONY: up down stop logs clean fclean
 # Ejecutar docker compose up
 up:
-	docker compose -f srcs/docker-compose.yml up
+	docker compose --project-directory srcs -f srcs/docker-compose.yml up
 
 # Detener los contenedores
 down:
-	docker compose -f srcs/docker-compose.yml down
+	docker compose --project-directory srcs -f srcs/docker-compose.yml down
 
 # Detener los contenedores
 stop:
-	docker compose -f srcs/docker-compose.yml stop
+	docker compose --project-directory srcs -f srcs/docker-compose.yml stop
 
 # Mostrar los logs del servicio
 logs:
-	docker compose -f srcs/docker-compose.yml logs $(SERVICES)
+	docker compose --project-directory srcs -f srcs/docker-compose.yml logs $(SERVICES)
 
 # Eliminar contenedores y volúmenes
 clean:
@@ -70,4 +70,4 @@ fclean:
 	docker system prune -a --volumes
 
 bonus:
-	docker --env-file srcs/.env compose -f srcs/docker-compose-bonus.yml up --build -d
+	docker compose --project-directory srcs -f srcs/docker-compose-bonus.yml up --build -d
