@@ -20,6 +20,11 @@ echo "DB_HOST:>$DATABASE_HOST<"
 echo "DB_NAME:>$DATABASE_NAME<"
 echo "DB_USER:>$DBSERVER_MSQL_USER<"
 echo "DB_PASSWORD:>$DBSERVER_MSQL_PASSWORD<"
+
+export DATABASE_HOST
+export DATABASE_NAME
+export DBSERVER_MSQL_USER
+export DBSERVER_MSQL_PASSWORD
 # Inside entrypoint or /etc/local.d/secret_copy.start
 cp $DBSERVER_MSQL_PASSWORD_FILE /tmp/db_password
 chown root:nginx /tmp/db_password
@@ -27,7 +32,7 @@ chmod 640 /tmp/db_password
 
 if [ -f "$CONFIG_FILE" ]; then
     echo "File already exists: $CONFIG_FILE"
-    php-fpm84 -F
+    exec php-fpm84 -F
 else
     echo "Installing Wordpress. File does not exist: $CONFIG_FILE"
     # Navigate to /www
@@ -68,8 +73,5 @@ else
             --user_pass="${CONTENTSERVER_USER_PASSWORD}" \
             --role=subscriber 2>&1 | tee /dev/stderr 
             
-    php-fpm84 -F
+    exec php-fpm84 -F
 fi
-
-
-define( 'WP_DEBUG', false );

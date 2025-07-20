@@ -107,6 +107,39 @@ pool configuration are added. Setting to "no" will make all environment variable
 clear_env = no
 ```
 
+# PHP-FPM launch
+
+Initially, inside  `/contentserver_setup.sh`, I launched the process like that:
+
+```sh
+php-fpm84 -F
+```
+`/contentserver_setup.sh` executes that command as a child process. The script then waits for `php-fpm84 -F` to finish. Since `php-fpm84 -F` runs indefinitely in the foreground (`-F`), the contentserver_setup.sh script (the PID 1 process) will never exit until PHP-FPM does.
+
+```sh
+/# ps
+PID   USER     TIME  COMMAND
+    1 root      0:00 {contentserver_s} /bin/sh /contentserver_setup.sh
+   17 root      0:00 {php-fpm84} php-fpm: master process (/etc/php84/php-fpm.conf)
+   18 nginx     0:00 {php-fpm84} php-fpm: pool www
+   19 nginx     0:00 {php-fpm84} php-fpm: pool www
+  984 root      0:00 /bin/sh
+ 1240 root      0:00 ps
+
+```
+
+This is the reason why i used `exec`. The exec command replaces the current shell process with the command you specify. The current shell's PID is taken over by the new command.
+
+
+```sh
+/# ps
+PID   USER     TIME  COMMAND
+    1 root      0:00 {php-fpm84} php-fpm: master process (/etc/php84/php-fpm.conf)
+   16 nginx     0:00 {php-fpm84} php-fpm: pool www
+   17 nginx     0:00 {php-fpm84} php-fpm: pool www
+   24 root      0:00 /bin/sh
+   30 root      0:00 ps
+```
 
 
 [Pdo_mysql]                        
