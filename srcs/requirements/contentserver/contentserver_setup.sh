@@ -58,20 +58,20 @@ else
     sed -i "s/define( 'DB_USER', 'username_here' );/define( 'DB_USER', getenv('DBSERVER_MSQL_USER') );/" $CONFIG_FILE         
     sed -i "s|define( 'DB_PASSWORD', 'password_here' );|define( 'DB_PASSWORD', trim(file_get_contents('/tmp/db_password')) );|" $CONFIG_FILE        
     sed -i "s|define( 'WP_DEBUG', false );|define( 'WP_DEBUG', true );|" $CONFIG_FILE    
-    wp --allow-root core install \
-        --url="${NGINX_PROXY_URL}" \
-        --title="${WP_TITLE}" \
-        --admin_user="${CONTENTSERVER_ROOT}" \
-        --admin_password="${CONTENTSERVER_ROOT_PASSWORD}" \
-        --admin_email="${CONTENTSERVER_ROOT_MAIL}" \
-        --skip-email 2>&1 | tee /dev/stderr
-        # Skips sending an installation email, useful in dev environments
+    # wp --allow-root core install \
+    #     --url="${NGINX_PROXY_URL}" \
+    #     --title="${WP_TITLE}" \
+    #     --admin_user="${CONTENTSERVER_ROOT}" \
+    #     --admin_password="${CONTENTSERVER_ROOT_PASSWORD}" \
+    #     --admin_email="${CONTENTSERVER_ROOT_MAIL}" \
+    #     --skip-email 2>&1 | tee /dev/stderr
+    #     # Skips sending an installation email, useful in dev environments
     
-    # Added tee for debug
-    # user will have 'Subscriber' role
-    wp --allow-root user create "${CONTENTSERVER_USER}" "${CONTENTSERVER_USER_MAIL}" \
-            --user_pass="${CONTENTSERVER_USER_PASSWORD}" \
-            --role=subscriber 2>&1 | tee /dev/stderr 
+    # # Added tee for debug
+    # # user will have 'Subscriber' role
+    # wp --allow-root user create "${CONTENTSERVER_USER}" "${CONTENTSERVER_USER_MAIL}" \
+    #         --user_pass="${CONTENTSERVER_USER_PASSWORD}" \
+    #         --role=subscriber 2>&1 | tee /dev/stderr 
             
     exec php-fpm84 -F
 fi
