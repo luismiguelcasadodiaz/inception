@@ -3,7 +3,7 @@ RUN apk add nginx
 COPY webserver_setup.sh /webserver_setup.sh
 RUN chmod +x /webserver_setup.sh && /webserver_setup.sh
 
-COPY html/index.html /www/index.html
+#COPY html/index.html /www/index.html
 COPY html/bad_request_ssl.html /www/bad_request_ssl.html
 COPY html/page_not_found.html /www/page_not_found.html
 COPY nginx.conf /etc/nginx/nginx.conf
