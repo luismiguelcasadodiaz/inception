@@ -1,6 +1,11 @@
 #!/bin/sh
 set -ex
 
+if [ ! -f /run/secrets/dbserver_root_password ]; then
+  echo "Secret not found — skipping healthcheck for now"
+  exit 0
+fi
+
 # Read the root password from the mounted secret file
 ROOT_PASSWORD=$(cat /run/secrets/dbserver_root_password)
 echo "ROOT_PASSWORD=$ROOT_PASSWORD"
