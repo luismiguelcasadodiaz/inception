@@ -3,7 +3,8 @@ SERVICE1 = webserver
 SERVICE2 = dbserver
 SERVICE3 = contentserver
 SERVICE9 = adminer
-SERVICES = $(SERVICE1) $(SERVICE2) $(SERVICE3) $(SERVICE9)
+SERVICES = $(SERVICE1) $(SERVICE2) $(SERVICE3)
+SERVICEB = $(SERVICE1) $(SERVICE2) $(SERVICE3) $(SERVICE9)
 
 
 .PHONY: all web db content client webclean dbclean contentclean clientclean 
@@ -63,11 +64,15 @@ logs:
 	docker compose --project-directory srcs -f srcs/docker-compose.yml logs $(SERVICES)
 
 # Eliminar contenedores y volúmenes
-clean:
+clean: down
 	docker image rm -f $(SERVICES)
 
-fclean:
+fclean: clean
+	docker volume rm inception_db_data
+	docker volume rm inception_wb_data
 	docker system prune -a --volumes
+	rm -rf /home/luicasad/data/db/*
+	rm -rf /home/luicasad/data/wp/*
 
 bonus:
 	docker compose --project-directory srcs -f srcs/docker-compose-bonus.yml up --build -d
