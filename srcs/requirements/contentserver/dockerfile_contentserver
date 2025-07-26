@@ -46,7 +46,8 @@ RUN addgroup -S nginx && adduser -S -G nginx nginx && \
     mkdir -p /www && \
     chown -R nginx:nginx /www  && \
     chmod -R 755 /www && \
-    chown nginx:nginx /usr/local/bin/wp
+    chown nginx:nginx /usr/local/bin/wp && \
+    ln -s /usr/bin/php84 /usr/bin/php
 
 
 VOLUME /www
