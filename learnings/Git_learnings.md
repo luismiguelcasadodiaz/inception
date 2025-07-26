@@ -22,3 +22,14 @@ origin	git@github.com:luismiguelcasadodiaz/inception.git (push)
 
 ```
 
+### Pull changes from one repository
+
+```bash
+git fetch delivery
+git checkout main
+git merge delivery/main
+git push origin main
+git push delivery main
+```
+
+
