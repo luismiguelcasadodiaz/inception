@@ -24,7 +24,7 @@ echo "DB_PASSWORD:>$DBSERVER_MSQL_PASSWORD<"
 export DATABASE_HOST
 export DATABASE_NAME
 export DBSERVER_MSQL_USER
-export DBSERVER_MSQL_PASSWORDgit 
+export DBSERVER_MSQL_PASSWORD 
 # Inside entrypoint or /etc/local.d/secret_copy.start
 cp $DBSERVER_MSQL_PASSWORD_FILE /tmp/db_password
 chown root:nginx /tmp/db_password
