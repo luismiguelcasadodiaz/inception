@@ -74,18 +74,16 @@ if [ ! -d /var/lib/mysql/mysql ]; then
     mariadb_pid=$!
 
     for i in $(seq 1 30); do
-	#mariadb -u root -p"$DBSERVER_ROOT_PASSWORD" -S /run/mysqld/mysqld.sock -e "SELECT 1" &>/dev/null && break
+	# The readiness check for the *temporary* server, before root password is set
     mariadb -u root -S /run/mysqld/mysqld.sock -e "SELECT 1" &>/dev/null && break
-	echo "MariaDB not ready yes, waiting ....($i/30)"
+	echo "MariaDB not ready yet, waiting ....($i/30)"
 	sleep 1
     done
 
     echo "3.-MariaDB server up and running temporally as user=root with PID=$mariadb_pid"
-    # Set passwords using the function
-    #mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$DBSERVER_ROOT_PASSWORD';"
     mariadb -u root -e "CREATE DATABASE IF NOT EXISTS \`$DATABASE_NAME\`;" -S /run/mysqld/mysqld.sock
 
-
+    # Set passwords using the function
     set_mysql_password "$DBSERVER_MSQL_USER" "$DBSERVER_MSQL_PASSWORD_FILE" "$MYSQL_PASSWORD" "contentserver.thenet"
     echo "4.-MariaDB mysql user password settled"
 
@@ -96,8 +94,8 @@ if [ ! -d /var/lib/mysql/mysql ]; then
 
     #echo "MariaDB exited with $?"
     echo "6.-MariaDB server launch ..."
-    exec su - mysql -s /bin/sh -c "/usr/bin/mariadbd --datadir=/var/lib/mysql"
+    exec su - mysql -s /bin/sh -c "/usr/bin/mariadbd --datadir=/var/lib/mysql --socket=/run/mysqld/mysqld.sock"
 else
     echo "7.-MariaDB server launch ..."
-    exec su - mysql -s /bin/sh -c "/usr/bin/mariadbd --datadir=/var/lib/mysql"
+    exec su - mysql -s /bin/sh -c "/usr/bin/mariadbd --datadir=/var/lib/mysql --socket=/run/mysqld/mysqld.sock"
 fi
