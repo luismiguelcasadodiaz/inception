@@ -69,7 +69,7 @@ clean: down
 
 fclean: clean
 	docker volume rm inception_db_data
-	docker volume rm inception_wb_data
+	docker volume rm inception_wp_data
 	docker system prune -a --volumes
 	rm -rf /home/luicasad/data/db/*
 	rm -rf /home/luicasad/data/wp/*
