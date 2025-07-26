@@ -106,3 +106,12 @@ RUN apk add --no-cache wget \ # Install wget to download the phar file
     && wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod +x wp-cli.phar
 ```
+
+
+Alpine installs PHP including version in its name as a suffix (php84, php82, etc.). 
+wp requires php binary has the literal `php` name.
+I create a link inside the container at building time.
+
+```sh
+ln -s /usr/bin/php84 /usr/bin/php
+```
