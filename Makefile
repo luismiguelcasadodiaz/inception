@@ -71,8 +71,8 @@ fclean: clean
 	docker volume rm inception_db_data
 	docker volume rm inception_wp_data
 	docker system prune -a --volumes
-	rm -rf /home/luicasad/data/db/*
-	rm -rf /home/luicasad/data/wp/*
+	chown -R luicasad:2023_barcelona /home/luicasad/data
+	rm -rf /home/luicasad/data
 
 bonus:
 	docker compose --project-directory srcs -f srcs/docker-compose-bonus.yml up --build -d
