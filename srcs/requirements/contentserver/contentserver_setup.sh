@@ -44,15 +44,6 @@ else
     tar -xzf latest.tar.gz
     # Move all from    /www/wordpress/*  to /www
     mv wordpress/* /www/
-    # Change ownership of ALL WordPress files and directories to nginx:nginx
-    # The -R (recursive) option is important
-    chown -R nginx:nginx /www/
-    # Set general permissions
-    # Find all directories and set permissions to 755 (owner R/W/X, group R/X, others R/X)
-    find /www/ -type d -exec chmod 755 {} +
-    # Find all files and set permissions to 644 (owner R/W, group R, others R)
-    find /www/ -type f -exec chmod 644 {} +
-
     # Remove the empty wordpress directory
     rm -rf wordpress
     # Clean up downloaded archive
@@ -61,8 +52,18 @@ else
     cp /opt/index.php .
     # Duplicate wp-config.php
     cp "$SAMPLE_FILE" "$CONFIG_FILE"
+    
+    # Change ownership of ALL WordPress files and directories to nginx:nginx
+    # The -R (recursive) option is important
+    chown -R nginx:nginx /www/
+    # Set general permissions
+    # Find all directories and set permissions to 755 (owner R/W/X, group R/X, others R/X)
+    find /www/ -type d -exec chmod 755 {} +
+    # Find all files and set permissions to 644 (owner R/W, group R, others R)
+    find /www/ -type f -exec chmod 644 {} +
     # Set wp-config.php to be more restrictive
     chmod 640 /www/wp-config.php # Owner R/W, Group R, Others no access
+
     # Modify define sentences  inside wp-config.php
     sed -i "s/define( 'DB_HOST', 'localhost' );/define( 'DB_HOST', getenv('DATABASE_HOST') );/" $CONFIG_FILE                    
     sed -i "s/define( 'DB_NAME', 'database_name_here' );/define( 'DB_NAME', getenv('DATABASE_NAME') );/" $CONFIG_FILE         
