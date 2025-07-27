@@ -53,16 +53,7 @@ else
     # Duplicate wp-config.php
     cp "$SAMPLE_FILE" "$CONFIG_FILE"
     
-    # Change ownership of ALL WordPress files and directories to nginx:nginx
-    # The -R (recursive) option is important
-    chown -R nginx:nginx /www/
-    # Set general permissions
-    # Find all directories and set permissions to 755 (owner R/W/X, group R/X, others R/X)
-    find /www/ -type d -exec chmod 755 {} +
-    # Find all files and set permissions to 644 (owner R/W, group R, others R)
-    find /www/ -type f -exec chmod 644 {} +
-    # Set wp-config.php to be more restrictive
-    chmod 640 /www/wp-config.php # Owner R/W, Group R, Others no access
+
 
     # Modify define sentences  inside wp-config.php
     sed -i "s/define( 'DB_HOST', 'localhost' );/define( 'DB_HOST', getenv('DATABASE_HOST') );/" $CONFIG_FILE                    
@@ -84,6 +75,17 @@ else
     wp --allow-root user create "${CONTENTSERVER_USER}" "${CONTENTSERVER_USER_MAIL}" \
             --user_pass="${CONTENTSERVER_USER_PASSWORD}" \
             --role=subscriber 2>&1 | tee /dev/stderr 
+
+    # Change ownership of ALL WordPress files and directories to nginx:nginx
+    # The -R (recursive) option is important
+    chown -R nginx:nginx /www/
+    # Set general permissions
+    # Find all directories and set permissions to 755 (owner R/W/X, group R/X, others R/X)
+    find /www/ -type d -exec chmod 755 {} +
+    # Find all files and set permissions to 644 (owner R/W, group R, others R)
+    find /www/ -type f -exec chmod 644 {} +
+    # Set wp-config.php to be more restrictive
+    chmod 640 /www/wp-config.php # Owner R/W, Group R, Others no access
             
     exec php-fpm84 -F
 fi
