@@ -85,7 +85,11 @@ Two considerations:
 
 
 ### Alpine config
-I have chosen Alpine Linux due to its small size. There is a version optimized for virtual systems. Alpine virtual with 66 MB. [alpine-virt-3.21.3-x86_64.iso](https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-virt-3.21.3-x86_64.iso)
+I have chosen Alpine Linux due to its small size. We have 35 GB in two folders in 42. One folder in our login with 5 GB. 30 GB in a shared disk where, from time to time, the administrator frees the space of big users....
+
+Also, because I know myself and I know that I will made many mistakes requiring rebooting the virtual machine. I did not want getting older watching rebooting screens. You know what i mean....
+
+There is a version optimized for virtual systems. Alpine virtual with 66 MB. [alpine-virt-3.21.3-x86_64.iso](https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-virt-3.21.3-x86_64.iso)
 
 It is a version designed to run in memory. You need to pay some attention to executing the script `alpine-setup` and ensure you define a [sys] filesystem and format default partitions to create a persistent configuration that exists next boot.
 
