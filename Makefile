@@ -15,6 +15,7 @@ SERVICEB = $(SERVICE1) $(SERVICE2) $(SERVICE3) $(SERVICE9)
 all:
 	cp ../data/certs/* srcs/requirements/webserver
 	mkdir -p /home/luicasad/data/db
+	chown -R 100:101 /home/luicasad/data/db
 	mkdir -p /home/luicasad/data/wp
 	docker compose --project-directory srcs -f srcs/docker-compose.yml up --build -d
 	docker image prune -a
@@ -71,8 +72,10 @@ fclean: clean
 	docker volume rm inception_db_data
 	docker volume rm inception_wp_data
 	docker system prune -a --volumes
-	chown -R luicasad:2023_barcelona /home/luicasad/data
-	rm -rf /home/luicasad/data
+# Change ownership for removing it with a common user 
+	chown -R luicasad:2023_barcelona /home/luicasad/data  # 
+	rm -rf /home/luicasad/data/db*
+	rm -rf /home/luicasad/data/wp*
 
 bonus:
 	docker compose --project-directory srcs -f srcs/docker-compose-bonus.yml up --build -d
