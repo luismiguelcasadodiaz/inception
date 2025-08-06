@@ -10,8 +10,15 @@ RUN apk add --no-cache mariadb mariadb-client
 
 # Change UID/GID of the mysql user to avoid conflicts with host users
 # above apk add created mysql UID(100) GID(101)
-# There is a collision with Host user Klogd 
-RUN usermod -u 1000 -o mysql && groupmod -g 1000 -o mysql
+# There is a collision with Host user Klogd
+# Change UID in /etc/passwd
+RUN sed -i 's/^mysql:x:[0-9]*:[0-9]*/mysql:x:1000:1000/' /etc/passwd
+
+# Change GID in /etc/group
+RUN sed -i 's/^mysql:x:[0-9]*/mysql:x:1000/' /etc/group
+
+# RUN usermod -u 1000 -o mysql && groupmod -g 1000 -o mysql
+
 # recreate mysql folder with appropiate ownerrship
 RUN set -ex; \
     rm -rf /var/lib/mysql; \
