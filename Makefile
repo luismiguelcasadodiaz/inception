@@ -15,7 +15,8 @@ SERVICEB = $(SERVICE1) $(SERVICE2) $(SERVICE3) $(SERVICE9)
 all:
 	cp ../data/certs/* srcs/requirements/webserver
 	mkdir -p /home/luicasad/data/db
-	doas chown -R 100:101 /home/luicasad/data/db
+	doas chown -R 1000:1000
+	/home/luicasad/data/db
 	mkdir -p /home/luicasad/data/wp
 	docker compose --project-directory srcs -f srcs/docker-compose.yml up --build -d
 	docker image prune -a

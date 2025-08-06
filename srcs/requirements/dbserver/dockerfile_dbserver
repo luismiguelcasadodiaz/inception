@@ -8,6 +8,10 @@ LABEL org. label-schema.date="May 2025"
 
 RUN apk add --no-cache mariadb mariadb-client 
 
+# Change UID/GID of the mysql user to avoid conflicts with host users
+# above apk add created mysql UID(100) GID(101)
+# There is a collision with Host user Klogd 
+RUN usermod -u 1000 -o mysql && groupmod -g 1000 -o mysql
 # recreate mysql folder with appropiate ownerrship
 RUN set -ex; \
     rm -rf /var/lib/mysql; \
