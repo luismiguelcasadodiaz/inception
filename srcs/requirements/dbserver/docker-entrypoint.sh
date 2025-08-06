@@ -94,6 +94,7 @@ if [ ! -d /var/lib/mysql/mysql ]; then
 
     #echo "MariaDB exited with $?"
     echo "6.-MariaDB server launch ..."
+    chown -R mysql:mysql /var/lib/mysql
     exec su - mysql -s /bin/sh -c "/usr/bin/mariadbd --datadir=/var/lib/mysql --socket=/run/mysqld/mysqld.sock"
 else
     echo "7.-MariaDB server launch ..."
