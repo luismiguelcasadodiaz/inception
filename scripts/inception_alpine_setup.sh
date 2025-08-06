@@ -70,3 +70,8 @@ chmod +x /etc/local.d/generate_cert.start
 echo "Archivo /etc/local.d/generate_cert.start creado correctamente."
 
 rc-update add local default
+
+# Permito que los scrips Makefile puedan canviar los propietarios de los archivo
+apk add doas
+echo "permit nopass luicasad cmd chown" >> /etc/doas.d
+
