@@ -1,7 +1,10 @@
 #!/bin/sh                                                                                                                                                                        
                                                                                                                                                                                  
 # Ruta de salida
-DATA_DIR="/home/luicasad/data"                                                                                                                                                            
+DATA_DIR="/data"   
+#DATA_DIR="/home/luicasad/data"
+DBVOLDIR="$DATA_DIR/db"
+WPVOLDIR="$DATA_DIR/wp"
 CERT_DIR="$DATA_DIR/certs"                                                                                                                                                  
 KEY_FILE="$CERT_DIR/nginx.key"                                                                                                                                                   
 CRT_FILE="$CERT_DIR/nginx.crt"                                                                                                                                                   
@@ -16,7 +19,9 @@ if [ -z "$IP" ]; then
 fi                                                                                                                                                                               
                                                                                                                                                                                  
 # Crear directorio si no existe                                                                                                                                                  
-mkdir -p "$CERT_DIR"                                                                                                                                                             
+mkdir -p "$CERT_DIR"
+mkdir -p "$DBVOLDIR"   
+mkdir -p "$WPVOLDIR"                                                                                                                                                                
                                                                                                                                        
                                                                                                                                                                                  
 # Generar certificado                                                                                                                                                            
@@ -24,7 +29,10 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -keyout "$KEY_FILE" -out "$CRT_FILE" \                                                                                                                                         
   -subj "/C=ES/ST=Catalonia/L=Barcelona/O=42barcelona/CN=$IP"                                                                                                                     
                                                                                                                                                                                  
-chown -R luicasad:2023_barcelona $DATA_DIR                                                                                                                                         
+    
+chown -R 1000:1000 $DATA_DIR
+chown luicasad:2023_barcelona $KEY_FILE
+chown luicasad:2023_barcelona $CRT_FILE                                                                                                                                    
 
        
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Certificado SSL generado para IP: $IP" >> $LOGFILE 2>&1

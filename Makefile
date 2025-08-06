@@ -13,10 +13,10 @@ SERVICEB = $(SERVICE1) $(SERVICE2) $(SERVICE3) $(SERVICE9)
 # --also saves space. Deletes all images not used by any containers, even tagged ones.
 # docker --env-file srcs/.env compose -f srcs/docker-compose.yml config   <<-helped 
 all:
-	cp ../data/certs/* srcs/requirements/webserver
-	mkdir -p /home/luicasad/data/db
-	doas chown -R 1000:1000 /home/luicasad/data/db
-	mkdir -p /home/luicasad/data/wp
+	cp /data/certs/* srcs/requirements/webserver
+#	mkdir -p /home/luicasad/data/db
+#   doas chown -R 1000:1000 /home/luicasad/data/db
+#	mkdir -p /home/luicasad/data/wp
 	docker compose --project-directory srcs -f srcs/docker-compose.yml up --build -d
 	docker image prune -a
 	
@@ -26,7 +26,7 @@ all:
 
 
 web:
-	cp ../data/certs/* srcs/requirements/webserver
+	cp /data/certs/* srcs/requirements/webserver
 	docker compose --project-directory srcs -f srcs/docker-compose.yml build webserver
 webclean:
 	docker image rm $(SERVICE1)
@@ -72,10 +72,8 @@ fclean: clean
 	docker volume rm inception_db_data
 	docker volume rm inception_wp_data
 	docker system prune -a --volumes
-# Change ownership for removing it with a common user 
-	chown -R luicasad:2023_barcelona /home/luicasad/data  # 
-	rm -rf /home/luicasad/data/db*
-	rm -rf /home/luicasad/data/wp*
+	doas rm -rf /data/db/*
+	doas rm -rf /data/wp/*
 
 bonus:
 	docker compose --project-directory srcs -f srcs/docker-compose-bonus.yml up --build -d

@@ -18,13 +18,13 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: "/home/luicasad/data/db"
+      device: "/data/db"
       o: bind
   wp_data:
     driver: local
     driver_opts:
       type: none
-      device: "${USER_HOME_DIR}/data/wp"
+      device: "/data/wp"
       o: bind
 
 secrets:
