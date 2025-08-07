@@ -1,4 +1,5 @@
 # Definir el nombre del servicio
+HOME = $(shell echo $$HOME)
 SERVICE1 = webserver
 SERVICE2 = dbserver
 SERVICE3 = contentserver
@@ -72,8 +73,8 @@ fclean: clean
 	docker volume rm inception_db_data
 	docker volume rm inception_wp_data
 	docker system prune -a --volumes
-	doas rm -rf /data/db/*
-	doas rm -rf /data/wp/*
+	doas rm -rf $(HOME)/data/db/*
+	doas rm -rf $(HOME)/data/wp/*
 
 bonus:
 	docker compose --project-directory srcs -f srcs/docker-compose-bonus.yml up --build -d

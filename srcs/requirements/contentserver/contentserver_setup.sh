@@ -63,7 +63,7 @@ else
     sed -i "s|define( 'WP_DEBUG', false );|define( 'WP_DEBUG', true );|" $CONFIG_FILE    
     wp --allow-root core install \
         --url="${NGINX_PROXY_URL}" \
-        --title="${WP_TITLE}" \
+        --title="${WP_TITLE}[$(date '+%Y-%m-%d %H:%M:%S')]" \
         --admin_user="${CONTENTSERVER_ROOT}" \
         --admin_password="${CONTENTSERVER_ROOT_PASSWORD}" \
         --admin_email="${CONTENTSERVER_ROOT_MAIL}" \

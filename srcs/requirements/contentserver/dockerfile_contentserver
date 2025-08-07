@@ -42,7 +42,9 @@ COPY --from=wp_cli_downloader /tmp/wp-cli.phar /usr/local/bin/wp
 # Assuming nginx user runs php-fpm, or www-data etc.
 # Add the 'nginx' user to the 'root' group (assuming 'root' group GID is 0)
 # This assumes 'nginx' user already exists from the base image.
-RUN addgroup -S nginx && adduser -S -G nginx nginx && \   
+#RUN addgroup -S nginx && adduser -S -G nginx nginx && \   
+
+RUN addgroup -g 110 -S nginx && adduser -u 110 -S -G nginx nginx && \
     mkdir -p /www && \
     chown -R nginx:nginx /www  && \
     chmod -R 755 /www && \
