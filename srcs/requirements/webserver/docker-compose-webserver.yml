@@ -1,26 +1,28 @@
 services:
-
   webserver:
     #command: echo "I'm running ${COMPOSE_PROJECT_NAME}/webserver"
     # commented cause overrides CMD in the Dockerfile
     container_name: webserver
     image: webserver # EL nombre de la imagen debe coincidir con el nombre del servicio
     depends_on:
-      dbserver:
-        condition: service_healthy  # Ensures database server is actually ready
       contentserver:
         condition: service_healthy  # Ensures php-fpm is actually ready
+    
     networks:
       inception_net:
         ipv4_address: 192.168.1.4  # Fixed IP
         aliases:
           - in_net
+    
     restart: always
+    ports:
+      - "443:443"
     build:
       context: ../webserver
       dockerfile: dockerfile_webserver
-    ports:
-      - "443:443"
+   volumes:
+      - wp_data:/www  # Maps host folder to container contentserver /www directory
+
     env_file:
       - ../../.env
     # --- Logging Configuration ---

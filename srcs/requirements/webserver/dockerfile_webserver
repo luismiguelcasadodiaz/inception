@@ -6,10 +6,10 @@ RUN apk add nginx
 # above apk add created mysql UID(100) GID(101)
 # There is a collision with Host user Klogd
 # Change UID in /etc/passwd
-RUN sed -i 's/^nginx:x:[0-9]*:[0-9]*/nginx:x:1000:1000/' /etc/passwd
+#RUN sed -i 's/^nginx:x:[0-9]*:[0-9]*/nginx:x:1000:1000/' /etc/passwd
 
 # Change GID in /etc/group
-RUN sed -i 's/^nginx:x:[0-9]*/nginx:x:1000/' /etc/group
+#RUN sed -i 's/^nginx:x:[0-9]*/nginx:x:1000/' /etc/group
 
 ##COPY webserver_setup.sh /webserver_setup.sh
 ##RUN chmod +x /webserver_setup.sh && /webserver_setup.sh
