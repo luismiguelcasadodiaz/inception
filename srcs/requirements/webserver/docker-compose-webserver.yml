@@ -20,7 +20,7 @@ services:
     build:
       context: ../webserver
       dockerfile: dockerfile_webserver
-   volumes:
+    volumes:
       - wp_data:/www  # Maps host folder to container contentserver /www directory
 
     env_file:

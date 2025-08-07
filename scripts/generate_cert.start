@@ -43,5 +43,3 @@ chown luicasad:2023_barcelona $CRT_FILE
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Certificado SSL generado para IP: $IP" >> $LOGFILE 2>&1
                                                                                                                                                
 echo "Certificado SSL generado para IP: $IP"
-
-echo "$ luicasad.42.fr" | sudo tee -a /etc/hosts

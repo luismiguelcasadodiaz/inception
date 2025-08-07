@@ -1,5 +1,5 @@
 #!/bin/sh
-
+LOGFILE="/var/log/update_hosts.log"
 # Discover current static IP (excluding loopback and docker bridges)
 IP=$(ip addr show | awk '/inet / && $2 !~ /^127/ && $NF !~ /^docker/ { sub(/\/.*/, "", $2); print $2; exit }')
 
@@ -20,6 +20,6 @@ else
     # Append new line
     echo "${IP} ${HOSTNAME}" >> "$HOSTS_FILE"
 fi
-
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] ${IP} ${HOSTNAME} wrote to ${HOSTS_FILE}" >> $LOGFILE 2>&1
 # Create new enviromental variable 
 export NGINX_PROXY_URL="https://${IP}"
