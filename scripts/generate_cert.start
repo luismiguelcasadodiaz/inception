@@ -1,8 +1,10 @@
 #!/bin/sh                                                                                                                                                                        
                                                                                                                                                                                  
 # Ruta de salida
-DATA_DIR="$HOME/data"   
-#DATA_DIR="/home/luicasad/data"
+LOGFILE="/var/log/generate_cert.log"
+
+#DATA_DIR="$HOME/data"   
+DATA_DIR="/home/luicasad/data"
 DBVOLDIR="$DATA_DIR/db"
 WPVOLDIR="$DATA_DIR/wp"
 CERT_DIR="$DATA_DIR/certs"                                                                                                                                                  
@@ -20,8 +22,11 @@ fi
                                                                                                                                                                                  
 # Crear directorio si no existe                                                                                                                                                  
 mkdir -p "$CERT_DIR"
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] mkdir -p $CERT_DIR" >> $LOGFILE 2>&1
 mkdir -p "$DBVOLDIR"   
-mkdir -p "$WPVOLDIR"                                                                                                                                                                
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] mkdir -p $DBVOLDIR" >> $LOGFILE 2>&1
+mkdir -p "$WPVOLDIR"        
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] mkdir -p $WPVOLDIR" >> $LOGFILE 2>&1                                                                                                                                                        
                                                                                                                                        
                                                                                                                                                                                  
 # Generar certificado                                                                                                                                                            
