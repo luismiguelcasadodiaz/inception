@@ -18,8 +18,8 @@ set_mysql_password() {
 
 
     local password=$(read_secret "$file_var")
-    echo "from secret file =$file_var the user =$username has this pass =$password from ip=$ip"
-    echo "envi =>$env_var<"
+    #echo "from secret file =$file_var the user =$username has this pass =$password from ip=$ip"
+    #echo "envi =>$env_var<"
    
 
     if [ -n "$password" ]; then
@@ -35,11 +35,11 @@ set_mysql_password() {
 
     if [ "$username" = "root" ]; then
         mariadb -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$password'; FLUSH PRIVILEGES; " -S /run/mysqld/mysqld.sock
-	echo "/////// root password setup ////$(whoami)///"
+	    #echo "/////// root password setup ////$(whoami)///"
     else
         mariadb -u root -e "CREATE USER IF NOT EXISTS '$username'@'$ip' IDENTIFIED BY '$password';" -S /run/mysqld/mysqld.sock
         mariadb -u root -e "GRANT ALL PRIVILEGES ON \`$DATABASE_NAME\`.* TO '$username'@'$ip' WITH GRANT OPTION; FLUSH PRIVILEGES; " -S /run/mysqld/mysqld.sock
-	echo "//////  user $username creation and password set ///////"
+	    #echo "//////  user $username creation and password set ///////"
     fi
 
     #mariadb -u root -e "FLUSH PRIVILEGES;" -S /run/mysqld/mysqld.sock
@@ -52,12 +52,12 @@ mkdir -p /var/lib/mysql
 chown -R mysql:mysql /var/lib/mysql
 
 # Set root password if MYSQL_ROOT_PASSWORD_FILE is set
-echo "root file:>$DBSERVER_ROOT_PASSWORD_FILE<"
-echo "msql file:>$DBSERVER_MSQL_PASSWORD_FILE<"
+#echo "root file:>$DBSERVER_ROOT_PASSWORD_FILE<"
+#echo "msql file:>$DBSERVER_MSQL_PASSWORD_FILE<"
 DBSERVER_ROOT_PASSWORD=$(read_secret "$DBSERVER_ROOT_PASSWORD_FILE")
 DBSERVER_MSQL_PASSWORD=$(read_secret "$DBSERVER_MSQL_PASSWORD_FILE")
-echo "root pass:>$DBSERVER_ROOT_PASSWORD<"
-echo "msql pass:>$DBSERVER_MSQL_PASSWORD<"
+#echo "root pass:>$DBSERVER_ROOT_PASSWORD<"
+#echo "msql pass:>$DBSERVER_MSQL_PASSWORD<"
 # Si mariadb-install-db debe existir el directorio
 if [ ! -d /var/lib/mysql/mysql ]; then
     echo "0.-Initializing MariaDB data directory..."
@@ -69,15 +69,15 @@ if [ ! -d /var/lib/mysql/mysql ]; then
     fi
 
     echo "1.-MariaDB data directory initialized."
-    echo "2.-exec /usr/bin/mariadbd --datadir=/var/lib/mysql &"
+    #echo "2.-exec /usr/bin/mariadbd --datadir=/var/lib/mysql &"
     /usr/bin/mariadbd -u root --datadir=/var/lib/mysql --socket=/run/mysqld/mysqld.sock > /tmp/mariadb.log 2>&1 &
     mariadb_pid=$!
 
     for i in $(seq 1 30); do
-	# The readiness check for the *temporary* server, before root password is set
-    mariadb -u root -S /run/mysqld/mysqld.sock -e "SELECT 1" &>/dev/null && break
-	echo "MariaDB not ready yet, waiting ....($i/30)"
-	sleep 1
+	    # The readiness check for the *temporary* server, before root password is set
+        mariadb -u root -S /run/mysqld/mysqld.sock -e "SELECT 1" &>/dev/null && break
+	    echo "MariaDB not ready yet, waiting ....($i/30)"
+	    sleep 1
     done
 
     echo "3.-MariaDB server up and running temporally as user=root with PID=$mariadb_pid"
