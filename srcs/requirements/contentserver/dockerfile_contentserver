@@ -44,7 +44,7 @@ COPY --from=wp_cli_downloader /tmp/wp-cli.phar /usr/local/bin/wp
 # This assumes 'nginx' user already exists from the base image.
 #RUN addgroup -S nginx && adduser -S -G nginx nginx && \   
 
-RUN addgroup -g 110 -S nginx && adduser -u 110 -S -G nginx nginx && \
+RUN addgroup -g 1000 -S nginx && adduser -u 1000 -S -G nginx nginx && \
     mkdir -p /www && \
     chown -R nginx:nginx /www  && \
     chmod -R 755 /www && \
