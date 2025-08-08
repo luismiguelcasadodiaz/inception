@@ -1,5 +1,6 @@
 #!/bin/sh
-set -ex
+#set -ex
+set -e
 
 # Function to read secret from file
 read_secret() {
