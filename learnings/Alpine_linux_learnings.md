@@ -398,7 +398,7 @@ exec openbox-session
 ```
 
 
-### 5. Customizing the Openbox Menu for luicasad user
+#### 6. Customizing the Openbox Menu for luicasad user
 I cluttered the default Openbox menu  with unnecessary entries. 
 I replaced it with a minimal menu containing only:
 
@@ -459,7 +459,7 @@ rc-service udev start
 rc-service dbus start
 ```
 
-### 6. Cliboard
+#### 7. Cliboard
 
 + Step 1: In the VirtualBox settings for the virtual machine, in general/Advanced Ensure Shared Clipboard is set to Bidireccional
 
@@ -476,4 +476,127 @@ Launch before opening openbox-session the clipboard in the background
 ```sh
 VBoxClient --clipboard &
 exec openbox-session
+```
+
+# Services boot order.
+
+After rebooting my virtual machine I faced the problem that not all my services restarted.
+
+```sh
+luicasad:~$ docker ps
+CONTAINER ID   IMAGE           COMMAND                  CREATED          STATUS                    PORTS                                       NAMES
+68d816a23e80   webserver       "/usr/sbin/nginx -c …"   35 minutes ago   Up 16 seconds             0.0.0.0:443->443/tcp, :::443->443/tcp       webserver
+```
+
+I discover that the secrets were not available when the containers were starting, so they failed silently. runlevel `boot` executes before than `default`.
+`Docker` was at `boot` Runlevel starting before `virtualbox-guest-additions` mounted secrets.
+
+
+```sh
+luicasad:~$ rc-status -a
+Runlevel: sysinit
+ devfs                                [  started  ]
+ dmesg                                [  started  ]
+ mdev                                 [  started  ]
+ hwdrivers                            [  started  ]
+Runlevel: boot
+ modules                              [  started  ]
+ hwclock                              [  started  ]
+ swap                                 [  started  ]
+ seedrng                              [  started  ]
+ sysctl                               [  started  ]
+ bootmisc                             [  started  ]
+ loadkmap                             [  started  ]
+ hostname                             [  started  ]
+ networking                           [  started  ]
+ docker                   [  started 00:07:42 (0) ]
+ syslog                               [  started  ]
+Runlevel: shutdown
+ savecache                            [  stopped  ]
+ killprocs                            [  stopped  ]
+ mount-ro                             [  stopped  ]
+Runlevel: default
+ acpid                                [  started  ]
+ crond                                [  started  ]
+ chronyd                              [  started  ]
+ sshd                                 [  started  ]
+ virtualbox-guest-additions           [  started  ]
+ local                                [  started  ]
+Runlevel: nonetwork
+Dynamic Runlevel: hotplugged
+Dynamic Runlevel: needed/wanted
+ sysfs                                [  started  ]
+ fsck                                 [  started  ]
+ root                                 [  started  ]
+ localmount                           [  started  ]
+ cgroups                              [  started  ]
+Dynamic Runlevel: manual
+```
+
+I moved `virtualbox-guest-additions` from `default` Runlevel to `boot` Runlevel
+
+```sh
+rc-update add virtualbox-guest-additions boot
+rc-update del virtualbox-guest-additions default
+```
+
+```sh
+/home/luicasad # rc-status -a
+Runlevel: sysinit
+ devfs                                [  started  ]
+ dmesg                                [  started  ]
+ mdev                                 [  started  ]
+ hwdrivers                            [  started  ]
+Runlevel: boot
+ modules                              [  started  ]
+ hwclock                              [  started  ]
+ swap                                 [  started  ]
+ seedrng                              [  started  ]
+ sysctl                               [  started  ]
+ bootmisc                             [  started  ]
+ loadkmap                             [  started  ]
+ hostname                             [  started  ]
+ networking                           [  started  ]
+ virtualbox-guest-additions           [  started  ]
+ docker                   [  started 00:00:50 (0) ]
+ syslog                               [  started  ]
+Runlevel: shutdown
+ savecache                            [  stopped  ]
+ killprocs                            [  stopped  ]
+ mount-ro                             [  stopped  ]
+Runlevel: default
+ acpid                                [  started  ]
+ crond                                [  started  ]
+ chronyd                              [  started  ]
+ sshd                                 [  started  ]
+ local                                [  started  ]
+Runlevel: nonetwork
+Dynamic Runlevel: hotplugged
+Dynamic Runlevel: needed/wanted
+ sysfs                                [  started  ]
+ fsck                                 [  started  ]
+ root                                 [  started  ]
+ localmount                           [  started  ]
+ cgroups                              [  started  ]
+Dynamic Runlevel: manual
+```
+
+But was not enough. I edited `/etc/init.d/docker` to create a depedency from `virtualbox-guest-additions`
+
+```sh
+depend() {
+        need sysfs cgroups net
+        after firewall
+        use virtualbox-guest-additions  <<=======
+}
+```
+
+In that way, after rebooting, the `restart: always` instruction  restarted the container:
+
+```sh
+luicasad:~$ docker ps
+CONTAINER ID   IMAGE           COMMAND                  CREATED          STATUS                    PORTS                                       NAMES
+68d816a23e80   webserver       "/usr/sbin/nginx -c …"   35 minutes ago   Up 16 seconds             0.0.0.0:443->443/tcp, :::443->443/tcp       webserver
+22a3330a256c   contentserver   "/contentserver_setu…"   35 minutes ago   Up 16 seconds (healthy)   0.0.0.0:9000->9000/tcp, :::9000->9000/tcp   contentserver
+2cb77aaeb272   dbserver        "/usr/local/sbin/doc…"   35 minutes ago   Up 16 seconds (healthy)   0.0.0.0:3306->3306/tcp, :::3306->3306/tcp   dbserver
 ```
