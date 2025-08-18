@@ -36,3 +36,5 @@ You're absolutely right — and this is a known limitation of vboxsf (VirtualBox
 Even with uid= and gid= options in /etc/fstab, vboxsf mounts are always owned by root:vboxsf, and Alpine (or other Linux guests) can't force change that ownership.
 
 This is not a bug in Alpine, but a design limitation of the VirtualBox shared folder driver.
+
+Share folders are available with the help of `virtualbox-guest-additions`. I shall execute virtualbox-guest-additions before docker.

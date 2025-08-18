@@ -75,3 +75,5 @@ rc-update add local default
 apk add doas
 echo "permit nopass luicasad cmd chown" >> /etc/doas.d
 
+
+
