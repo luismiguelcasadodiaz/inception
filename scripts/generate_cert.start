@@ -29,19 +29,29 @@ mkdir -p "$WPVOLDIR"
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] mkdir -p $WPVOLDIR" >> $LOGFILE 2>&1                                                                                                                                                        
                                                                                                                                        
 # Borra el certificado antiguo
-rm -f "$KEY_FILE" "$CRT_FILE"
+if [ -e "$KEY_FILE" ]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $KEY_FILE already exists. I delete it." >> $LOGFILE 2>&1             
+    rm  $KEY_FILE
+fi
 
+if [ -e "$CRT_FILE" ]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $CRT_FILE already exists. I delete it." >> $LOGFILE 2>&1    
+    rm $CRT_FILE
+fi
 # Generar certificado                                                                                                                                                            
-openssl req -x509 -nodes -days 1 -newkey rsa:2048 \                                                                                                                            
-  -keyout "$KEY_FILE" -out "$CRT_FILE" \                                                                                                                                         
-  -subj "/C=ES/ST=Catalonia/L=Barcelona/O=42barcelona/OU=IT Inception/CN=$IP"                                                                                                                     
+openssl req -x509 -nodes -days 1 -newkey rsa:2048 -keyout "$KEY_FILE" -out "$CRT_FILE" -subj "/C=ES/ST=Catalonia/L=Barcelona/O=42barcelona/OU=IT Inception/CN=$IP"                                                                                                                     
                                                                                                                                        
-    
+if [ -e "$KEY_FILE" ]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] new $KEY_FILE created for IP: $IP." >> $LOGFILE 2>&1  
+    echo "Certificado SSL generado para IP: $IP"           
+fi
+if [ -e "$CRT_FILE" ]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] new $CRT_FILE created for IP: $IP." >> $LOGFILE 2>&1             
+fi
+
 chown -R 1000:1000 $DATA_DIR
 chown luicasad:2023_barcelona $KEY_FILE
 chown luicasad:2023_barcelona $CRT_FILE                                                                                                                                    
 
        
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Certificado SSL generado para IP: $IP" >> $LOGFILE 2>&1
                                                                                                                                                
-echo "Certificado SSL generado para IP: $IP"
