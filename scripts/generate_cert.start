@@ -28,12 +28,14 @@ echo "[$(date '+%Y-%m-%d %H:%M:%S')] mkdir -p $DBVOLDIR" >> $LOGFILE 2>&1
 mkdir -p "$WPVOLDIR"        
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] mkdir -p $WPVOLDIR" >> $LOGFILE 2>&1                                                                                                                                                        
                                                                                                                                        
-                                                                                                                                                                                 
+# Borra el certificado antiguo
+rm -f "$KEY_FILE" "$CRT_FILE"
+
 # Generar certificado                                                                                                                                                            
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 \                                                                                                                            
+openssl req -x509 -nodes -days 1 -newkey rsa:2048 \                                                                                                                            
   -keyout "$KEY_FILE" -out "$CRT_FILE" \                                                                                                                                         
-  -subj "/C=ES/ST=Catalonia/L=Barcelona/O=42barcelona/CN=$IP"                                                                                                                     
-                                                                                                                                                                                 
+  -subj "/C=ES/ST=Catalonia/L=Barcelona/O=42barcelona/OU=IT Inception/CN=$IP"                                                                                                                     
+                                                                                                                                       
     
 chown -R 1000:1000 $DATA_DIR
 chown luicasad:2023_barcelona $KEY_FILE

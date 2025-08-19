@@ -12,9 +12,13 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./certs/nginx.key -o
 
 As it requires the virtual machine IP, that is assigned by DHCP, i created a script that runs at bootime.
 
-I saved the **executable** script at `/etc/local.d/generate_cert.start` and activate it at boot time wiht `rc-update add local default`
+I saved the **executable** script at `/etc/local.d/generate_cert.start` and activate it at boot time with `rc-update add local default`
 
 You can verify certificate content with this command
+
+`-nodes` is required to allow nginx auutomatically use the certificated wihtout a password.
+`-days` to define validy period.
+`-newkey` forces to create a new private key if does not exist. if exists openssl refuses to create a new private key. 
 
 ```bash
 openssl x509 -in /ruta/nginx.crt -text -noout
