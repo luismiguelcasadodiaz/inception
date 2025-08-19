@@ -62,6 +62,11 @@ else
     sed -i "s/define( 'DB_USER', 'username_here' );/define( 'DB_USER', getenv('DBSERVER_MSQL_USER') );/" $CONFIG_FILE         
     sed -i "s|define( 'DB_PASSWORD', 'password_here' );|define( 'DB_PASSWORD', trim(file_get_contents('/tmp/db_password')) );|" $CONFIG_FILE        
     sed -i "s|define( 'WP_DEBUG', false );|define( 'WP_DEBUG', true );|" $CONFIG_FILE    
+    # Add WP_DEBUG_LOG and WP_DEBUG_DISPLAY (crucial for debug.log)
+    # It's good to add these just after the WP_DEBUG line.
+    # We'll look for the WP_DEBUG line and insert after it.
+    sed -i "/define( 'WP_DEBUG', true );/a define( 'WP_DEBUG_LOG', true );" $CONFIG_FILE
+    sed -i "/define( 'WP_DEBUG_LOG', true );/a define( 'WP_DEBUG_DISPLAY', false );" $CONFIG_FILE
     wp --allow-root core install \
         --url="${NGINX_PROXY_URL}" \
         --title="${WP_TITLE}[$(date '+%Y-%m-%d %H:%M:%S')]" \
