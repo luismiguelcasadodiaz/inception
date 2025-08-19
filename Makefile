@@ -14,7 +14,7 @@ SERVICEB = $(SERVICE1) $(SERVICE2) $(SERVICE3) $(SERVICE9)
 # --also saves space. Deletes all images not used by any containers, even tagged ones.
 # docker --env-file srcs/.env compose -f srcs/docker-compose.yml config   <<-helped 
 all:
-	cp /data/certs/* srcs/requirements/webserver
+	cp ../data/certs/* srcs/requirements/webserver
 #	mkdir -p /home/luicasad/data/db
 #   doas chown -R 1000:1000 /home/luicasad/data/db
 #	mkdir -p /home/luicasad/data/wp
@@ -27,7 +27,7 @@ all:
 
 
 web:
-	cp /data/certs/* srcs/requirements/webserver
+	cp ../data/certs/* srcs/requirements/webserver
 	docker compose --project-directory srcs -f srcs/docker-compose.yml build webserver
 webclean:
 	docker image rm $(SERVICE1)
