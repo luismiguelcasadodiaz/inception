@@ -201,3 +201,54 @@ volumes:
       device: /home/luicasad/data/db
       o: bind
 ```
+
+
+# Status of project's containers.
+
+Is possible to query the status of all containers in a project with `docker compose ps`.
+
+### flag -f
+In the first way, you pass the file *.yml wht the `-f` flag.
+
+```sh
+luicasad:~$ docker compose -f inception/srcs/docker-compose.yml ps
+NAME            IMAGE           COMMAND                  SERVICE         CREATED          STATUS                    PORTS
+contentserver   contentserver   "/contentserver_setu…"   contentserver   21 minutes ago   Up 21 minutes (healthy)   0.0.0.0:9000->9000/tcp, :::9000->9000/tcp
+dbserver        dbserver        "/usr/local/sbin/doc…"   dbserver        21 minutes ago   Up 21 minutes (healthy)   0.0.0.0:3306->3306/tcp, :::3306->3306/tcp
+webserver       webserver       "/usr/sbin/nginx -c …"   webserver       21 minutes ago   Up 20 minutes             0.0.0.0:443->443/tcp, :::443->443/tcp
+```
+### flag -p
+In the second way, i can pass the project name  wiht flag `-p`.
+
+The first line of `docker-compose.yml` gives a name to my proyect. Giving a name to the `docker compose` project allows me to query thru cli with flag -p.
+
+```yaml
+name: inception
+include:
+  - ./requirements/dbserver/docker-compose-dbserver.yml
+  - ./requirements/webserver/docker-compose-webserver.yml
+  - ./requirements/contentserver/docker-compose-contentserver.yml
+```
+
+In such a way  i can check the status of containers included in the proyect with only one command, no matter which directory you are.
+``` sh
+luicasad:~$ docker compose -p inception ps
+NAME            IMAGE           COMMAND                  SERVICE         CREATED          STATUS                    PORTS
+contentserver   contentserver   "/contentserver_setu…"   contentserver   18 minutes ago   Up 18 minutes (healthy)   0.0.0.0:9000->9000/tcp, :::9000->9000/tcp
+dbserver        dbserver        "/usr/local/sbin/doc…"   dbserver        18 minutes ago   Up 18 minutes (healthy)   0.0.0.0:3306->3306/tcp, :::3306->3306/tcp
+webserver       webserver       "/usr/sbin/nginx -c …"   webserver       18 minutes ago   Up 18 minutes             0.0.0.0:443->443/tcp, :::443->443/tcp
+```
+### no flag 
+
+With the help of the enviromental variable `COMPOSE_PROJECT_NAME` is possible too.
+
+
+
+```sh
+luicasad:~$ export COMPOSE_PROJECT_NAME=inception
+luicasad:~$ docker compose  ps
+NAME            IMAGE           COMMAND                  SERVICE         CREATED          STATUS                    PORTS
+contentserver   contentserver   "/contentserver_setu…"   contentserver   22 minutes ago   Up 22 minutes (healthy)   0.0.0.0:9000->9000/tcp, :::9000->9000/tcp
+dbserver        dbserver        "/usr/local/sbin/doc…"   dbserver        22 minutes ago   Up 22 minutes (healthy)   0.0.0.0:3306->3306/tcp, :::3306->3306/tcp
+webserver       webserver       "/usr/sbin/nginx -c …"   webserver       22 minutes ago   Up 22 minutes             0.0.0.0:443->443/tcp, :::443->443/tcp
+```

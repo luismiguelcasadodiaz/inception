@@ -10,19 +10,33 @@ mkdir -p certs
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./certs/nginx.key -out ./certs/nginx.crt -subj "/C=ES/ST=Catalonia/L=Barcelona/O=42barcelona.com/CN=10.12.250.80"
 ```
 
+`-nodes` is required to allow nginx auutomatically use the certificated wihtout a password.
+`-days` to define validy period.
+`-newkey` forces to create a new private key if does not exist. if exists openssl refuses to create a new private key. 
+
 As it requires the virtual machine IP, that is assigned by DHCP, i created a script that runs at bootime.
 
 I saved the **executable** script at `/etc/local.d/generate_cert.start` and activate it at boot time with `rc-update add local default`
 
 You can verify certificate content with this command
 
-`-nodes` is required to allow nginx auutomatically use the certificated wihtout a password.
-`-days` to define validy period.
-`-newkey` forces to create a new private key if does not exist. if exists openssl refuses to create a new private key. 
 
 ```bash
 openssl x509 -in /ruta/nginx.crt -text -noout
 ```
+
+Inside the containers I did not installed openssl. I extract the certificate from the container wiht this command.
+
+```sh
+docker exec webserver cat /etc/nginx/ssl/nginx.crt | openssl x509  -text -noout
+```
+
+Using openssl client I retrieve from the server the certificate.
+```sh
+openssl s_client -connect luicasad.42.fr:443 -tls1_2 < /dev/null | grep -E "Protocol|Cipher|subject=|issuer=|Verify return code"
+```
+
+Comparing both i prove i use it.
 
 
 # one preocess per container
