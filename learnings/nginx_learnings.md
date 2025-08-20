@@ -1,8 +1,8 @@
 # ssl certificate
 
-Inception project entrypoint is port 443 at webserver container. 
+The entry point for the Inception project is the web server container, which listens on port 443.
 
-That requiress a ssl certification. This is the standard instruction to create a ssl certificate
+Since this port is used for HTTPS, an SSL certificate is required. Below are the standard instructions for generating one.
 
 
 ```bash
@@ -10,13 +10,13 @@ mkdir -p certs
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ./certs/nginx.key -out ./certs/nginx.crt -subj "/C=ES/ST=Catalonia/L=Barcelona/O=42barcelona.com/CN=10.12.250.80"
 ```
 
-`-nodes` is required to allow nginx auutomatically use the certificated wihtout a password.
-`-days` to define validy period.
-`-newkey` forces to create a new private key if does not exist. if exists openssl refuses to create a new private key. 
+`-nodes` The -nodes option is necessary to generate a certificate that Nginx can use automatically, without prompting for a password.
+`-days` to define the validity period.
+`-newkey` forces the creation of a new private key if it does not exist. If it exists, OpenSSL refuses to create a new private key. 
 
-As it requires the virtual machine IP, that is assigned by DHCP, i created a script that runs at bootime.
+Since the virtual machine's IP address is assigned dynamically via DHCP, I created a script that runs at boot time to handle this automatically.
 
-I saved the **executable** script at `/etc/local.d/generate_cert.start` and activate it at boot time with `rc-update add local default`
+I saved the **executable** script at `/etc/local.d/generate_cert.start` and activated it at boot time with `rc-update add local default`
 
 You can verify certificate content with this command
 
@@ -25,21 +25,21 @@ You can verify certificate content with this command
 openssl x509 -in /ruta/nginx.crt -text -noout
 ```
 
-Inside the containers I did not installed openssl. I extract the certificate from the container wiht this command.
+Inside the containers, I did not install OpenSSL. I extract the certificate from the container with this command.
 
 ```sh
 docker exec webserver cat /etc/nginx/ssl/nginx.crt | openssl x509  -text -noout
 ```
 
-Using openssl client I retrieve from the server the certificate.
+Using the OpenSSL client, I retrieve the certificate from the server.
 ```sh
 openssl s_client -connect luicasad.42.fr:443 -tls1_2 < /dev/null | grep -E "Protocol|Cipher|subject=|issuer=|Verify return code"
 ```
 
-Comparing both i prove i use it.
+Comparing both with `openssl x509  -text -noout -fingeprint -sha256`, I prove I use it.  
 
 
-# one preocess per container
+# one process per container
 The daemon off; directive in Nginx, especially when used in containerized environments like Docker, significantly enhances robustness by aligning with the "one process per container" philosophy and simplifying process management. Here's why it adds robustness:
 
 ### 1.- Proper Process Supervision:
@@ -71,13 +71,13 @@ The daemon off; directive in Nginx, especially when used in containerized enviro
 inside nginx.conf `fastcgi_pass` directive tells Nginx where to send PHP requests for processing.
 
 ```conf
-# Forward requests to the contentserver container's IP and PHP-FPM port
+# Forward requests to the content server container's IP and PHP-FPM port
 fastcgi_pass 192.168.1.3:9000;
 ```
 
 That directive goes inside a server {} directive specifiying *.php treatment `location ~* \.php$ `
 
-You'd typically use `~*` when you want to handle file extensions or parts of a URL without worrying about the client's capitalization otherwise you use `~` only.
+You'd typically use `~*` when you want to handle file extensions or parts of a URL without worrying about the client's capitalization otherwise, you use `~` only.
 
 
 ```conf
@@ -134,9 +134,9 @@ SCRIPT_FILENAME: This is a standard FastCGI variable name (and also an environme
   <br>
     + It's vital that the path constructed by `$document_root$fastcgi_script_name` (e.g., /www/index.php) is the actual path to the PHP file **inside the PHP-FPM container**. If these paths don't align (e.g., Nginx thinks the root is /www but PHP-FPM expects files in /var/www/html), PHP-FPM will return a "No input file specified" error or similar. 
     <br>
-    + I commented `try_files`. That avoids nginx looks for *.php files it does not have, ensuring Nginx blindly passes the request and relies on PHP-FPM to find the file at /www/index.php.
+    + I commented `try_files`. That avoids nginx looking for *.php files it does not have, ensuring Nginx blindly passes the request and relies on PHP-FPM to find the file at /www/index.php.
 <br>
-+ 3.- Security and Correct Execution: This parameter **prevents** PHP-FPM from executing **arbitrary files** that it shouldn't. It explicitly tells it the script to run based on the request URI and the defined document root.
++ 3.- Security and Correct Execution: This parameter **prevents** PHP-FPM from executing **arbitrary files** that it shouldn't. It explicitly tells the script to run based on the request URI and the defined document root.
 
-### location blocks order matters
+### the order of the location blocks matters.
 The order of your location blocks for static files, PHP, and the general fallback 
