@@ -1,12 +1,12 @@
-+ Each RUN command is a docker layer.
-+ Gather in one RUN related commands to reduce the number of layer and consquently image size
++ Each RUN command is a Docker layer.
++ Gather in one RUN related commands to reduce the number of layers and consequently image size
 + First RUN less frequently changing commands
 
 
 # Secrets
-Using Docker secrets requires the initialitation of `docker swarm init`.
+Using Docker secrets requires initializing `docker swarm init`.
 
-Secrets are not visible inside a Dockerfile. I discover this with dbserver healthcheck.
+Secrets are not visible inside a Dockerfile. I discovered this through the dbserver's health check.
 
 #### Create a secret from a file
 
@@ -58,10 +58,10 @@ Testing and testing make hard disk requirements grow and grow
 To remove:
   - all stopped containers
   - all networks not used by at least one container
-  - all images without at least one container associated to them
+  - all images without at least one container associated with them
   - all build cache
 
-we can use ...
+We can use ...
 
 ```bash
 docker system prune -a
@@ -83,8 +83,8 @@ Reserved addresses:
 
 Usable range: 192.168.1.2 → 192.168.1.14
 
-# logs sizes
- My aim is to keep small the virtual machine harddisk size. This is why i limit log file size and number of log files to keep
+# log sizes
+ I aim to keep the virtual machine hard disk size small. This is why I limit log file size and number of log files to keep
 
 ```yaml
 
@@ -95,7 +95,7 @@ Usable range: 192.168.1.2 → 192.168.1.14
         max-file: "3"   # Keep the 5 most recent log files      
 ```
 
-To know where log file is saved we can use this command
+To know where the log file is saved, we can use this command
 
 ```bash
 docker inspect --format='{{.LogPath}}' inception-dbserver-1
@@ -105,25 +105,25 @@ docker inspect --format='{{.LogPath}}' inception-dbserver-1
 
 # healthcheck
 
-To be sure  dbserver is up and runnig before other containers start, a healthcheck is available in Dockerfile.
+To ensure the dbserver is up and running before other containers start, a health check is available in the Dockerfile.
 
-But Dockerfile has not access to secrets. Dockerfile can read .ENV defined enviromental variables.
+But Dockerfile does not have access to secrets. Dockerfile can read environmental variables defined in the `.env` file.
 
-I do not want to duplicate where password are kept, so i decide the creation os a healthcheck script for this pourpouse
+I do not want to duplicate where passwords are kept, so I created a healthcheck script for this purpose
 
 ```Dockerfile
 #HEALTHCHECK --interval=10s --timeout=5s --retries=3 CMD mariadb-admin ping -u mysql --password="${DBSERVER_MSQL_PASSWORD}"-h localhost || exit 1
-#  Dockerfile does not acces secrets, only .env defined variables. These is the reason to create a healthycheck script.
+#  Dockerfile does not access secrets, only .env-defined variables. This is the reason to create a healthy check script.
 HEALTHCHECK --interval=10s --timeout=5s --retries=3 CMD /usr/local/sbin/healthcheck.sh || exit 1
 
 ```
 
-The docker-compose files of dependant containers must have the instruction `depends_on`
+The Docker Compose files of dependent containers must have the instruction `depends_on`
 
 ```yaml
     depends_on:
       dbserver:
-        condition: service_healthy  # Ensures database server is actually ready
+        condition: service_healthy  # Ensures database server is ready
 ```
 
 # env_file
@@ -153,7 +153,7 @@ eafa4d1a3023   webserver       "/usr/sbin/nginx -c …"   35 seconds ago   Up 11
 5dc881e03c0e   adminerserver   "lighttpd -D -f /etc…"   16 hours ago     Up 32 seconds (unhealthy)   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp     inception-adminerserver-1
 ```
 
-It is possible the customization of container names using the docker compose instruction `container_name`
+I customized the container names using the Docker Compose instruction `container_name`
 
 ```conf 
 webserver:                        #Service name
@@ -171,7 +171,7 @@ baf676929a0e   adminerserver   "lighttpd -D -f /etc…"   4 minutes ago   Up 4 m
 917e1d5ff1a4   dbserver        "/usr/local/sbin/doc…"   4 minutes ago   Up 4 minutes (healthy)     0.0.0.0:3306->3306/tcp, :::3306->3306/tcp   dbserver
 ```
 
-It is also possible the customization of network  names using the docker compose instruction `name` together with `networks` instuctions.
+I customized the network name using the Docker Compose instruction `name` together with the `networks` instruction.
 
 ``` conf
 
@@ -181,9 +181,9 @@ networks:
 ```
 
 
-In this way i converted `inception-contentserver-1.inception_inception_net` into `contentserver.thenet`
+In this way, i converted `inception-contentserver-1.inception_inception_net` into `contentserver.thenet`
 
-# Persitant volumes
+# Persistent volumes
 
 
 ```yaml
@@ -203,12 +203,12 @@ volumes:
 ```
 
 
-# Status of project's containers.
+# Status of the project's containers.
 
-Is possible to query the status of all containers in a project with `docker compose ps`.
+It is possible to query the status of all containers in a project with `docker compose ps`.
 
 ### flag -f
-In the first way, you pass the file *.yml wht the `-f` flag.
+One may specify the desired .yml configuration file by employing the -f flag.
 
 ```sh
 luicasad:~$ docker compose -f inception/srcs/docker-compose.yml ps
@@ -218,9 +218,9 @@ dbserver        dbserver        "/usr/local/sbin/doc…"   dbserver        21 mi
 webserver       webserver       "/usr/sbin/nginx -c …"   webserver       21 minutes ago   Up 20 minutes             0.0.0.0:443->443/tcp, :::443->443/tcp
 ```
 ### flag -p
-In the second way, i can pass the project name  wiht flag `-p`.
+Alternatively, the project name may be designated using the -p flag.
 
-The first line of `docker-compose.yml` gives a name to my proyect. Giving a name to the `docker compose` project allows me to query thru cli with flag -p.
+The initial line of the docker-compose.yml file serves to assign a name to the project. By naming the Docker Compose project, one enables the use of the -p flag within the command-line interface to facilitate targeted queries.
 
 ```yaml
 name: inception
@@ -230,7 +230,8 @@ include:
   - ./requirements/contentserver/docker-compose-contentserver.yml
 ```
 
-In such a way  i can check the status of containers included in the proyect with only one command, no matter which directory you are.
+This approach permits the inspection of all containers associated with the project via a single command, irrespective of the current working directory.
+
 ``` sh
 luicasad:~$ docker compose -p inception ps
 NAME            IMAGE           COMMAND                  SERVICE         CREATED          STATUS                    PORTS
@@ -240,7 +241,7 @@ webserver       webserver       "/usr/sbin/nginx -c …"   webserver       18 mi
 ```
 ### no flag 
 
-With the help of the enviromental variable `COMPOSE_PROJECT_NAME` is possible too.
+It is also possible to achieve this by setting the environmental variable COMPOSE_PROJECT_NAME.
 
 
 
