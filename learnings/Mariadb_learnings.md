@@ -41,12 +41,13 @@ RUN apk apk add --no-cache mariadb mariadb-client
 |`root:x:0:0:root:/root:/bin/sh`<br>`bin:x:1:1:bin:/bin:/sbin/nologin`<br>`daemon:x:2:2:daemon:/sbin:/sbin/nologin`<br>`lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin`<br>`sync:x:5:0:sync:/sbin:/bin/sync`<br>`shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown`<br>`halt:x:7:0:halt:/sbin:/sbin/halt`<br>`mail:x:8:12:mail:/var/mail:/sbin/nologin`<br>`news:x:9:13:news:/usr/lib/news:/sbin/nologin`<br>`uucp:x:10:14:uucp:/var/spool/uucppublic:/sbin/nologin`<br>`cron:x:16:16:cron:/var/spool/cron:/sbin/nologin`<br>`ftp:x:21:21::/var/lib/ftp:/sbin/nologin`<br>`sshd:x:22:22:sshd:/dev/null:/sbin/nologin`<br>`games:x:35:35:games:/usr/games:/sbin/nologin`<br>`ntp:x:123:123:NTP:/var/empty:/sbin/nologin`<br>`guest:x:405:100:guest:/dev/null:/sbin/nologin`<br>`nobody:x:65534:65534:nobody:/:/sbin/nologin`|`root:x:0:0:root:/root:/bin/sh` <br> `bin:x:1:1:bin:/bin:/sbin/nologin`<br>`daemon:x:2:2:daemon:/sbin:/sbin/nologin`<br>`lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin`<br>`sync:x:5:0:sync:/sbin:/bin/sync`<br>`shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown`<br>`halt:x:7:0:halt:/sbin:/sbin/halt`<br>`mail:x:8:12:mail:/var/mail:/sbin/nologin`<br>`news:x:9:13:news:/usr/lib/news:/sbin/nologin`<br>`uucp:x:10:14:uucp:/var/spool/uucppublic:/sbin/nologin`<br>`cron:x:16:16:cron:/var/spool/cron:/sbin/nologin`<br>`ftp:x:21:21::/var/lib/ftp:/sbin/nologin`<br>`sshd:x:22:22:sshd:/dev/null:/sbin/nologin`<br>`games:x:35:35:games:/usr/games:/sbin/nologin`<br>`ntp:x:123:123:NTP:/var/empty:/sbin/nologin`<br>`guest:x:405:100:guest:/dev/null:/sbin/nologin`<br>`nobody:x:65534:65534:nobody:/:/sbin/nologin` <br>🟩 mysql\:x\:100\:101:mysql:/var/lib/mysql:/sbin/nologin|
 |/var/lib/misc|/var/lib/misc <br>🟩  /var/lib/mysql|
 
-The fact that mysql user has no login, brought some headache trying to run Maria's daemond as mysql user.
+
+The absence of a login for the mysql user proved rather troublesome when attempting to execute MariaDB’s daemon under said user.
 
 ```bash
 exec su - mysql -s /bin/sh -c "/usr/bin/mariadbd --datadir=/var/lib/mysql \"\$@\""
 ```
-was the solution. -s flags adds a shell to nologin users
+The issue was resolved by using the -s flag, which temporarily assigns a shell to users configured with nologin."
 
 # mariadb-install-db
 
@@ -84,7 +85,7 @@ RUN apk add --no-cache mariadb mariadb-client && mariadb-install-db --user=mysql
 
 # mariadbd default's folder
 
-I founded it running inside container shell this command
+I found it running inside the container shell, this command
 ```bash
 apk info -L mariadb | grep mariadbd
 ```
@@ -92,7 +93,7 @@ apk info -L mariadb | grep mariadbd
 # mariadb-server.cnf default status
      
 ```cnf                                                                                                                                        
-# These groups are read by MariaDB server.                                                                                                      
+# These groups are read by the MariaDB server.                                                                                                      
 # Use it for options that only the server (but not clients) should see                                                                          
                                                                                                                                                 
 # this is read by the standalone daemon and embedded servers                                                                                    
@@ -120,7 +121,7 @@ skip-networking
 #wsrep_slave_threads=1                                                                                                                          
 #innodb_flush_log_at_trx_commit=0                                                                                                               
                                                                                                                                                 
-# this is only for embedded server                                                                                                              
+# this is only for the embedded server                                                                                                              
 [embedded]                                                                                                                                      
                                                                                                                                                 
 # This group is only read by MariaDB servers, not by MySQL.                                                                                     
@@ -135,7 +136,7 @@ skip-networking
 
 ```
 
-Mariadb, in this dbcontainer will be accesed from contentserver. I must comment `skip-networking`
+Mariadb, in this dbcontainer will be accessed from contentserver. I must comment `skip-networking`
 
 
 
@@ -159,7 +160,7 @@ MariaDB [(none)]> SELECT Host, User, password FROM mysql.user;
 
 
 
-# accesing as root from other containers
+# accessing as root from other containers
 
 
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.1.1' IDENTIFIED BY 'your_root_password';
@@ -194,3 +195,13 @@ MariaDB [(none)]> SELECT DISTINCT user FROM mysql.global_priv;
 +-------------+
 ```
 
+# set default database in current session
+```sh
+MariaDB [(none)]> USE WORDPRESS;
+```
+
+# show database's tables
+
+```sh
+MariaDB [(none)]> SHOW TABLES;
+```
