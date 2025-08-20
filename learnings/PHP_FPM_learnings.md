@@ -26,7 +26,7 @@ This is the "Process Manager" part of its name. PHP-FPM acts as a daemon that ma
 + **Master Process**: A single master process oversees the worker processes.
 + **Worker Processes** (Child Processes): These are the actual PHP interpreters that execute your PHP code. PHP-FPM can dynamically create or destroy these workers based on the current load, optimizing resource usage.
 
-+ **Worker Pools**: PHP-FPM allows you to set up multiple "pools" of workers, each with its own configuration (e.g., different user IDs, group IDs, php.ini settings, resource limits). This is incredibly useful for hosting multiple websites on a single server, providing isolation and better resource control for each site.
++ **Worker Pools**: PHP-FPM allows you to set up multiple "pools" of workers, each with its configuration (e.g., different user IDs, group IDs, php.ini settings, resource limits). This is incredibly useful for hosting multiple websites on a single server, providing isolation and better resource control for each site.
 
 ### Performance Improvements:
 + **Reduced Overhead**: By reusing PHP processes, it avoids the constant startup/teardown overhead of traditional CGI.
@@ -46,12 +46,10 @@ PHP-FPM provides features like graceful restarts (allowing updates without dropp
 
 + 1.- Web Server Receives Request: A user's browser sends a request to your web server (e.g., Nginx or Apache).
 + 2.- Web Server Forwards to PHP-FPM: If the request is for a PHP file, the web server doesn't execute it directly. Instead, it acts as a proxy and forwards the request to PHP-FPM (typically via a TCP/IP socket or a Unix socket).
-
 + 3.- PHP-FPM Assigns to Worker: PHP-FPM's master process receives the request and assigns it to an available worker process from its pool.
-+ 4.- Worker Executes PHP: The worker process executes the PHP script. If an opcode cache is in use, it will use the cached version if available, otherwise, it will compile and execute the script.
++ 4.- Worker Executes PHP: The worker process executes the PHP script. If an opcode cache is in use, it will use the cached version if available; otherwise, it will compile and execute the script.
 + 5.- Response Sent Back: The PHP worker sends the output (HTML, JSON, etc.) back to the web server.
 + 6.- Web Server Delivers to Browser: The web server then sends the final response to the user's browser.
-
 
 
 # php-fpm logs
@@ -80,15 +78,15 @@ listen =: Tells you the address (IP:Port or Unix socket path) PHP-FPM is listeni
 ```conf
 listen = 0.0.0.0:9000
 ```
-Instead of 192.168.1.3, that is Fix IP assigned by docker-compose i configured to listen at 0.0.0.0 for compatibility with healthcheck
+Instead of 192.168.1.3, which is the fixed IP assigned by Docker Compose, I configured it to listen at 0.0.0.0 for compatibility with healthcheck
 
-listen.allowed_clients =: Tells you if there are IP restrictions on who can connect.
+listen.allowed_clients =: Indicates whether there are IP-based restrictions on incoming connections.
 
 ``` conf
 listen.allowed_clients = 127.0.0.1,192.168.1.4
 ```
 Added ip `127.0.0.1` for healthchecking. 
-###### ATTENTION HERE. No whitespaces after comma allowed in this directive.
+###### ATTENTION HERE. No whitespaces after the comma allowed in this directive.
 
 user = / group =: Tells you the system user/group PHP-FPM runs as, which needs permissions to read PHP files.
 
@@ -96,10 +94,10 @@ user = / group =: Tells you the system user/group PHP-FPM runs as, which needs p
 user = nginx
 group = nginx
 ```
-# workers and enviroment variables
+# workers and environment variables
 
 The default configuration is that php-fpm starts workers with a clear environment.
-that Prevents arbitrary environment variables from reaching FPM worker processes by clearing the environment in workers before env vars specified in this
+This prevents arbitrary environment variables from reaching FPM worker processes by clearing the environment in workers before environment variables specified in this
 pool configuration are added. Setting to "no" will make all environment variables available to PHP code via getenv(), `$_ENV` and `$_SERVER`.
  
 
@@ -128,7 +126,7 @@ PID   USER     TIME  COMMAND
 
 ```
 
-This is the reason why i used `exec`. The exec command replaces the current shell process with the command you specify. The current shell's PID is taken over by the new command.
+This is the reason why I used `exec`. The exec command replaces the current shell process with the command you specify. The current shell's PID is taken over by the new command.
 
 
 ```sh
