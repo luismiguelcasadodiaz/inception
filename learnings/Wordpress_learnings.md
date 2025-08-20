@@ -1,7 +1,7 @@
 
 # wp-config.php
 
-If `wp-config.php` does not exist, Wordpress starts with a form asking manual typping for:
+If `wp-config.php` does not exist, WordPress starts with a form asking for manual typing:
 
 + DATABASE_NAME
 + USER_NAME
@@ -9,7 +9,7 @@ If `wp-config.php` does not exist, Wordpress starts with a form asking manual ty
 + DATABASE_HOST
 + TABLE_PREFIX
 
-Inception requires an automatic setup. So we must create a `wp-config.php` making one copy from `/www/wp-config-sample.php` and editting this lines
+Inception requires an automatic setup. So we must create a `wp-config.php`, making one copy from `/www/wp-config-sample.php` and editing these lines
 
 ```conf
 
@@ -18,7 +18,7 @@ define( 'DB_NAME', 'database_name_here' );
 define( 'DB_USER', 'username_here' );  
 define( 'DB_PASSWORD', 'password_here' );
 ```
-One `sed` command assists us with this replacements
+One `sed` command assists us with these replacements
  
 ```bash
    sed -i "s/define( 'DB_HOST', 'localhost' );/define( 'DB_HOST', '$DATABASE_HOST' );/" $CONFIG_FILE                    
@@ -33,7 +33,7 @@ define( 'DB_PASSWORD', 'jaja_msql_jaja' );
 define( 'DB_HOST', '192.168.1.2' ); 
 ```
 
-To hide this information, let's use some built-in php functions:
+To hide this information, let's use some built-in PHP functions:
 
 + **getenv()**: Returns the value as a string, or false if the variable does not exist.
 
@@ -50,12 +50,12 @@ $password = file_get_contents('/run/secrets/db_password');
 
 
 
-+ **trim()**:Removes whitespace or other characters from the beginning and end of a string. Useful when reading from files where trailing \n or whitespace may appear.
++ **trim()**: Removes whitespace or other characters from the beginning and end of a string. Useful when reading from files where trailing \n or whitespace may appear.
 ```sh
 $cleaned = trim("  example\n");
 ```
 
-Change `sed` to use the built-in funcion like this
+Change `sed` to use the built-in function like this
 
 ```sh
 sed -i "s/define( 'DB_HOST', 'localhost' );/define( 'DB_HOST', getenv('DATABASE_HOST') );/" $CONFIG_FILE                    
@@ -64,9 +64,9 @@ sed -i "s/define( 'DB_USER', 'username_here' );/define( 'DB_USER', getenv('DBSER
 sed -i "s|define( 'DB_PASSWORD', 'password_here' );|define( 'DB_PASSWORD', trim(file_get_contents('/tmp/db_password')) );|" $CONFIG_FILE     
 ```
 
-Note that last `search` commnad for `sed` has pipe (`|`) instead of slash(`/`) as a delimiter cause  `$DBSERVER_MSQL_PASSWORD_FILE` is a path
+Note that the last `search` command for `sed` has a pipe (`|`) instead of a slash(`/`) as a delimiter cause  `$DBSERVER_MSQL_PASSWORD_FILE` is a path
 
-and you will get
+And you will get
 
 ```conf
 define( 'DB_NAME', getenv('DATABASE_NAME') );
@@ -75,7 +75,7 @@ define( 'DB_PASSWORD', trim(file_get_contents('/tmp/db_password')) );
 define( 'DB_HOST', getenv('DATABASE_HOST') );     
 ```
 An additional problem arises with the permissions to read the secret.
-Docker creates a READ ONLY folder for the secrets owned by root and the group x (104, 105, etc, not a fix one choosen by swarm)
+Docker creates a READ ONLY folder for the secrets owned by root and the group x (104, 105, etc, not a fixed one chosen by swarm)
 php-fpm, running as nginx, can not read the secret
 
 
