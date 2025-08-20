@@ -75,7 +75,7 @@ define( 'DB_PASSWORD', trim(file_get_contents('/tmp/db_password')) );
 define( 'DB_HOST', getenv('DATABASE_HOST') );     
 ```
 An additional problem arises with the permissions to read the secret.
-Docker creates a READ ONLY folder for the secrets owned by root and the group x (104, 105, etc, not a fixed one chosen by swarm)
+Docker creates a READ-ONLY folder for the secrets owned by root and the group x (104, 105, etc, not a fixed one chosen by swarm)
 php-fpm, running as nginx, can not read the secret
 
 
@@ -88,7 +88,7 @@ drwxr-xr-x    1 root     root          4096 Jun 26 09:31 ..
 -rwxrwx---    1 root     104              8 Jun 23 06:29 contentserver_user_password
 -rwxrwx---    1 root     104             14 May 13 10:38 dbserver_msql_password
 ```
-This is why inside the entrypoint script I copy the secret to an editable folder to change ownership and permissions
+This is why, inside the entrypoint script, I copy the secret to an editable folder to change ownership and permissions
 
 ```sh
 cp $DBSERVER_MSQL_PASSWORD_FILE /tmp/db_password
@@ -97,9 +97,9 @@ chmod 640 /tmp/db_password
 ```
 # wp-admin/install.php
 
-It is the first script executed by wordpress. That implies a manual intervention of user we want to avoid.
+This is the initial script triggered by WordPress during setup. It requires manual user intervention, which we aim to eliminate.
 
-Wordpress has a utility that automatices the installation process. wp-cli.
+WordPress has a utility that automates the installation process. wp-cli.
 
 ```Dockerfile
 RUN apk add --no-cache wget \ # Install wget to download the phar file
@@ -108,8 +108,8 @@ RUN apk add --no-cache wget \ # Install wget to download the phar file
 ```
 
 
-Alpine installs PHP including version in its name as a suffix (php84, php82, etc.). 
-wp requires php binary has the literal `php` name.
+Alpine installs PHP, including the version in its name as a suffix (php84, php82, etc.). 
+WP requires a PHP binary that has the literal `php` name.
 I create a link inside the container at building time.
 
 ```sh
