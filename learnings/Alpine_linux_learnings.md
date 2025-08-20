@@ -1,42 +1,42 @@
 # Version
 
-I use an Alpine linux version with an slimmed down kernel. Optimized for virtual systems.[Named virtual ](https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-virt-3.21.3-x86_64.iso)
+I use an Alpine Linux version with a slimmed-down kernel. Optimized for virtual systems.[Named virtual ](https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-virt-3.21.3-x86_64.iso)
 
-It is a volatil version designe to exist only in RAM. Running setup you MUST make file sustem persistent
+It is a volatile version designed to exist only in RAM. Running setup, you MUST make the file system persistent
 
 # Login
 User root has no password. FIX this at setup.
 
 # setup-alpine
-This is the script to configure Alpine linux
-+ select keyboar map: us us ---> to fit with 42 Mac keyboards
-+ select hostname : localhost [default]
+This is the script to configure Alpine Linux
++ select keyboard map: us us ---> to fit with 42 Mac keyboards
++ select hostname: localhost [default]
 + Interface:
     + to initialize: eth0 [default]
     + Ip address for eth0: dhcp [default]
     + any manual network configuration: n [default]
 
 + Root Password:
-+ TimeZone : Europe Madrid
-+ Proxy : none [default]
-+ Network Time Protocol : chrony [default]
++ TimeZone: Europe Madrid
++ Proxy: none [default]
++ Network Time Protocol: chrony [default]
 + APK Mirror
     + Enable community repositories (c). Required to download Docker, Git, etc...
-    + Find and use fastest mirror (f) --> mirror.raiolanetworks.net Lugo Spain  NUMBER 84
-+ user : no  [default] --> I will create it later with the UID/GID luicasad has in hostmachine
+    + Find and use the fastest mirror (f) --> mirror.raiolanetworks.net Lugo, Spain  NUMBER 84
++ user: no  [default] --> I will create it later with the UID/GID luicasad has in hostmachine
 + ssh
-    + server : openssh [default]
+    + server: openssh [default]
     + root login prohibit-password [default]
-    + root key : nono [default]
+    + root key: nono [default]
 + Disk & Install
-    + disk to use : sda
-    + how use it  : sys  --> i want sda become a system disks
-    + Erase sda disk and continue : y
+    + disk to use: sda
+    + how to use it: sys  --> I want SDA to become a system disk.
+    + Erase sda disk and continue: y
 
 
 # /etc/fstab
 
-Configure automount the shared folder between host machine and virtual machine. Add this line
+Configure automounting the shared folder between the host machine and the virtual machine. Add this line
 
 ```bash
 inception_host	/home/luicasad/inception_host	vboxsf	defaults	0	0
@@ -48,13 +48,13 @@ inception  /home/luicasad vboxsf user,uid=101177,gid=4223,rw,auto 0 0
 🚫
 You're absolutely right — and this is a known limitation of vboxsf (VirtualBox Shared Folders):
 
-Even with uid= and gid= options in /etc/fstab, vboxsf mounts are always owned by root:vboxsf, and Alpine (or other Linux guests) can't force change that ownership.
+Even with uid= and gid= options in /etc/fstab, vboxsf mounts are always owned by root:vboxsf, and Alpine (or other Linux guests) can't force a change in that ownership.
 
 This is not a bug in Alpine, but a design limitation of the VirtualBox shared folder driver.
 
 # add new user
 
-I want that my user luicasad in the virtual machine has the same uid/gid that the ones I have in my host machine. This will help me later to push changes from virtual machine to my repositories
+I want my user luicasad in the virtual machine to have the same UID/gid as the ones I have in my host machine. This will help me later to push changes from the virtual machine to my repositories
 
 ```bash
 id luicasad
@@ -77,11 +77,7 @@ apk add docker
 apk add docker-compose
 
 
-
-
-
-
-# docker wakes up at boot time
+# docker wakes up at boot time.
 ```sh
 rc-update add docker boot
 rd-service docker start
@@ -93,23 +89,23 @@ rd-service docker start
 docker swarm init
 ```
 
-# allow my user to run docker
+# allow my user to run Docker
 ```sh
 adduser luicasad docker
 ```
 
 # keys
 
-Copy you id_rsa key from your 42 school home directory to work wiht the delivery repository
+Copy your id_rsa key from your 42 school home directory to work with the delivery repository
 
 # /bin/sh
 
 
 
-On Alpine Linux, /bin/sh is usually a POSIX shell (ash), which does not support ${!var}, a `indirect parameter expansion`. 
+On Alpine Linux, /bin/sh is usually a POSIX shell (ash), which does not support ${!var}, an `indirect parameter expansion`. 
 The indirect parameter expansion is a bash feature.
 
-My db container entrypoint script gave me an error `line 77: syntax error: bad substitution`
+My DB container entrypoint script gave me an error `line 77: syntax error: bad substitution`
 
 
 ```sh
@@ -125,7 +121,7 @@ set_mysql_password() {
     echo "pass =$password"
 ```
 
-i solved it like this
+I solved it like this
 
 ```sh
     local password=$(read_secret "$file_var")
@@ -137,7 +133,7 @@ Inception subject says:
 
 + You must configure your **domain name to point to your local IP address**. This domain name must be luicasad.42.fr.
 
-Despite that Alpine Linux has a `setup-hostname` command, the result does not affects /etc/hosts
+Despite Alpine Linux having a `setup-hostname` command, the result does not affect `etc/hosts` .
 
 ```bash
 / # setup-hostname 
@@ -148,21 +144,21 @@ Enter system hostname (fully qualified form, e.g. 'foo.example.org') [luicasad.4
 / # 
 ```
 
-Additionally the network interface i work with in the Oracle VirtualBox is bridge, so my VM gets its IP dynamically from 42's DHCP.
+Additionally, the network interface I work with in the Oracle VirtualBox is a bridge, so my VM gets its IP dynamically from 42's DHCP.
 
-I ask at booting time to update `/etc/hosts` with the current ip running `/etc/local.d/update_hosts.start`
+I ask at booting time to update `/etc/hosts` with the current IP running `/etc/local.d/update_hosts.start`
 
 # SQL syntax and /bin/sh
 
-Blending enviroment variables with SQL sentences created at runtime was not straight.
+Blending environment variables with SQL sentences created at runtime was not straightforward.
 
-My **first approach** inside dbserver's  `docker-entrypoint.sh` was:
+## My **first approach** inside the dbserver's  `docker-entrypoint.sh` was:
 
 ```sh
 mariadb -u root -e "CREATE DATABASE IF NOT EXISTS '$DATABASE_NAME';" -S /run/mysqld/mysqld.sock
 ```
 
-That expanded and behavied like this
+That expanded and behaved like this
 ```sh 
 mariadb -u root -e 'CREATE DATABASE IF NOT EXISTS '"'"'WORDPRESS'"'"';' -S /run/mysqld/mysqld.sock
 --------------
@@ -178,14 +174,14 @@ In SQL:
 
 + Backticks (`) are used to delimit identifiers (like database names, table names, column names) when those identifiers contain special characters, spaces, or are reserved keywords.
 
-My **second approach** was
+## My **second approach** was
 
 
 ```sh
 mariadb -u root -e "CREATE DATABASE IF NOT EXISTS `$DATABASE_NAME`;" -S /run/mysqld/mysqld.sock
 ```
 
-and the error inside dbserver's  `docker-entrypoint.sh` changed to the error message:
+and the error inside the dbserver's  `docker-entrypoint.sh` changed to the error message:
 
 ```sh
 /usr/local/sbin/docker-entrypoint.sh: line 60: WORDPRESS: not found
@@ -198,7 +194,7 @@ The reason behind this change was the fact that in shell scripting, when you wra
 + Captures the output of that command.
 + Substitutes the backtick expression with that output.
 
-in such a way that 
+In such a way that 
 ```sh
 echo "Today is: `date`"
 ```
@@ -207,14 +203,10 @@ becomes
 Today is: Fri Jun 28 12:34:56 UTC 2024
 ```
 
-There is not `wordpress` command in `/bin/sh`'s path
+There is no `wordpress` command in `/bin/sh`'s path
 
 
-The Solution: Escaping the Backticks for Literal Use
-
-You need the backticks to be passed literally to the mariadb command for SQL, not interpreted by the shell for command substitution. To do this, you must escape the backticks with a backslash when they are inside double quotes.
-
-
+The Solution: Escaping the Backticks for Literal Use. You need the backticks to be passed literally to the mariadb command for SQL, not interpreted by the shell for command substitution. To do this, you must escape the backticks with a backslash when they are inside double quotes.
 
 ```sh
 mariadb -u root -e "CREATE DATABASE IF NOT EXISTS \`$DATABASE_NAME\`;" -S /run/mysqld/mysqld.sock
@@ -223,7 +215,7 @@ mariadb -u root -e "CREATE DATABASE IF NOT EXISTS \`$DATABASE_NAME\`;" -S /run/m
 
 ### graphical interface
 
-#### 1.- which one? a small one.
+#### 1.- Which one? A small one.
 
 | Environment                  | HD requirements  (aprox.) | Stand-by RAM  (aprox.) |
 | ---------------------------- | ------------------------- | ---------------------- |
@@ -239,7 +231,7 @@ mariadb -u root -e "CREATE DATABASE IF NOT EXISTS \`$DATABASE_NAME\`;" -S /run/m
 
 In the table, the indication "(WM only)" means "Window Manager only", in contrast to a "full desktop environment" (DE).
 
-Both Openbox and i3wm are minimalistic window managers (WMs), and while consume similar resources they differ significantly in design philosophy, workflow, and user interaction. Here's a clear comparison:
+Both Openbox and i3wm are minimalistic window managers (WMs), and while they consume similar resources, they differ significantly in design philosophy, workflow, and user interaction. Here's a clear comparison:
 
 | **Aspect**                 | **Openbox**                                     | **i3wm**                                              |
 | -------------------------- | ----------------------------------------------- | ----------------------------------------------------- |
@@ -253,7 +245,7 @@ Both Openbox and i3wm are minimalistic window managers (WMs), and while consume 
 | **Use case fit**           | Lightweight alternative to traditional desktops | Productivity-focused workflows (devs, analysts)       |
 | **Dependencies**           | Fewer (if avoiding full DE)                     | Slightly more due to bar, dmenu, etc.                 |
 
-In context of Alpine Linux inside VirtualBox:
+In the context of Alpine Linux inside VirtualBox:
 + Performance: Both are extremely lightweight and suitable for Alpine's minimalist philosophy.
 + Mouse support: If your VirtualBox setup passes mouse input correctly and you prefer GUI interaction, Openbox is easier to handle.
 + Keyboard-centric workflows: If you're comfortable working mostly via keyboard (e.g., for coding, tiling multiple terminals), i3wm is more efficient.
@@ -330,7 +322,7 @@ EndSection
 ```
 ##### Uncover which device gets which kind of event
 
-+ 1.- list availabel input devices
++ 1.- list available input devices
 
 ```sh
 /home/luicasad # ls -al /dev/input/
@@ -353,8 +345,8 @@ crw-rw----    1 root     input      13,  33 Jul 13 11:32 mouse1
 cat /dev/input/event3
 ```
 
-while you move the mouse in the virtual machine or type in the keyboard.
-The one that shows data commig is the one to map inside `xorg.conf` file
+While you move the mouse in the virtual machine or type on the keyboard.
+The one that shows data coming is the one to map inside the `xorg.conf` file
 
 
 #### 4.-User Permissions for Running a Graphical Environment in Alpine Linux
@@ -374,13 +366,13 @@ adduser luicasad input
 ```
 
 #### 5.- Launch openbox at login time.
-To automatically startup in a graphical environment that shows a login screen (greeter) i need a **display manager**, which is the component responsible for:
+To automatically start up in a graphical environment that shows a login screen (greeter), I need a **display manager**, which is the component responsible for:
 
 + Automatically starting the X server at startup
 + Displaying a graphical login screen (GUI)
 + Launching the desktop or window manager (in your case, OpenBox) after logging in
 
-We intentionally avoided using a **display manager** choosing only a **windows manager** (openbox). There is not "greeter screen".
+We intentionally avoided using a **display manager**, choosing only a **window manager** (OpenBox). There is no "greeter screen".
 Instead, we configured the system to start X and Openbox automatically after the user logs in manually from TTY1.
 
 + Step 1: Created ~/.profile with:
@@ -461,9 +453,9 @@ rc-service dbus start
 
 #### 7. Cliboard
 
-+ Step 1: In the VirtualBox settings for the virtual machine, in general/Advanced Ensure Shared Clipboard is set to Bidireccional
++ Step 1: In the VirtualBox settings for the virtual machine, in General/Advanced, Ensure Shared Clipboard is set to Bidirectional
 
-+ step 2: install additions that support x11.
++ step 2: install additions that support X11.
 
 ```sh
 apk add virtualbox-guest-additions-x11
@@ -471,7 +463,7 @@ apk add virtualbox-guest-additions-x11
 
 + Step 2: modify  ~/.xinitrc with:
 
-Launch before opening openbox-session the clipboard in the background
+Launch before opening the openbox-session, the clipboard in the background.
 
 ```sh
 VBoxClient --clipboard &
@@ -480,7 +472,7 @@ exec openbox-session
 
 # Services boot order.
 
-After rebooting my virtual machine I faced the problem that not all my services restarted.
+After rebooting my virtual machine, I faced the problem that not all my services restarted.
 
 ```sh
 luicasad:~$ docker ps
@@ -488,8 +480,8 @@ CONTAINER ID   IMAGE           COMMAND                  CREATED          STATUS 
 68d816a23e80   webserver       "/usr/sbin/nginx -c …"   35 minutes ago   Up 16 seconds             0.0.0.0:443->443/tcp, :::443->443/tcp       webserver
 ```
 
-I discover that the secrets were not available when the containers were starting, so they failed silently. runlevel `boot` executes before than `default`.
-`Docker` was at `boot` Runlevel starting before `virtualbox-guest-additions` mounted secrets.
+I discovered that the secrets were not available when the containers were starting, so they failed silently. The runlevel `boot` executes before the runlevel `default`.
+`Docker` was at `boot` Runlevel, starting before `virtualbox-guest-additions` mounted secrets.
 
 
 ```sh
@@ -581,7 +573,7 @@ Dynamic Runlevel: needed/wanted
 Dynamic Runlevel: manual
 ```
 
-But was not enough. I edited `/etc/init.d/docker` to create a depedency from `virtualbox-guest-additions`
+But it was not enough. I edited `/etc/init.d/docker` to create a dependency from `virtualbox-guest-additions`
 
 ```sh
 depend() {
