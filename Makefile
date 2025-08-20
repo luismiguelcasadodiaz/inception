@@ -19,7 +19,7 @@ all:
 #   doas chown -R 1000:1000 /home/luicasad/data/db
 #	mkdir -p /home/luicasad/data/wp
 	docker compose --project-directory srcs -f srcs/docker-compose.yml up --build -d
-	docker image prune -a
+#	docker image prune -a
 	
 
 
@@ -42,10 +42,6 @@ content:
 contentclean:
 	docker image rm $(SERVICE3)
 
-client:
-	docker compose --project-directory srcs -f srcs/docker-compose.yml build client
-clientclean:
-	docker image rm $(SERVICE9)
 
 # global rules 
 .PHONY: up down stop logs clean fclean
