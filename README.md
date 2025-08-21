@@ -11,28 +11,27 @@ new personal virtual machine.
 • This subject requires putting into practice concepts related to Docker usage.
 
 
-+ This project involves setting up a small infrastructure composed of different services un-
-der specific rules.
++ This project involves setting up a small infrastructure composed of different services under specific rules.
 + You must use **docker compose**.
 + Each Docker image must have the **same name as its corresponding service**.
-+ Each service has to run in a **dedicated container**.
++ Each service must run in a **dedicated container**.
 + For performance reasons, the containers must be built either from the penultimate stable version of **Alpine or from Debian**. The choice is yours.
 + You also have to **write your own Dockerfiles**, one per service. The Dockerfiles must be called in your docker-compose.yml by your Makefile.
 + This means you must **build the Docker images** for your project yourself. It is then **forbidden to pull ready-made Docker images**, as well as using services such as DockerHub (Alpine/Debian being excluded from this rule).
 + Your containers must restart automatically in case of a crash.
 + Using network: host or --link or links: is **forbidden**.
 + The **network line must be present in your docker-compose.yml** file.
-+ Your containers mustn’t be started with a command running an infinite loop. Thus, this also applies to any command used as an entry point, or used in entry point scripts. The following are a few prohibited hacky patches: tail -f, bash, sleep infinity, while true.
-+ Configure your domain name so it points to your local IP address. This domain name must be login.42.fr. Again, you have to use your own login. For example, if your login is luis, luis.42.fr will redirect to the IP address pointing to luis’s website.
++ Your containers mustn’t be started with a command running an infinite loop. Thus, this also applies to any command used as an entry point or used in entry point scripts. The following are a few prohibited hacky patches: tail -f, bash, sleep infinity, while true.
++ Configure your domain name to point to your local IP address. This domain name must be login.42.fr. Again, you have to use your login. For example, if your login is luis, luis.42.fr will redirect to the IP address pointing to luis’s website.
 + The latest tag is prohibited.
 + **No password must be present in your Dockerfiles**. It is mandatory to use environment variables. Also, it is strongly recommended to use a .env file to store environment variables. The .env file should be located at the root of the srcs directory.
-+ Your NGINX container must be the **only entrypoint into your infrastructure via the port 443 only**, using the TLSv1.2 or TLSv1.3 protocol.
++ Your NGINX container must be the **only entry point into your infrastructure via port 443 only**, using the TLSv1.2 or TLSv1.3 protocol.
 
 ### Mandatory Part
 You then have to set up:
 • A Docker container that contains NGINX with TLSv1.2 or TLSv1.3 only.
 
-• A Docker container that contains WordPress + php-fpm (it must be installed and configured) only without nginx.
+• A Docker container that contains WordPress + php-fpm (it must be installed and configured), only without nginx.
 
 • A Docker container that contains only **MariaDB**,without nginx.
 
@@ -40,7 +39,7 @@ You then have to set up:
 
 • A second volume that contains your WordPress website files.
 
-• A docker network that establishes the connection between your containers.
+• A Docker network that establishes the connection between your containers.
 
 • In your WordPress database, there **must be two users**, one of them being the administrator. The administrator’s username **can’t contain admin/Admin or administrator/Administrator** (e.g., admin, administrator, Administrator, admin-123, and
 so forth).
@@ -53,9 +52,9 @@ so forth).
 Expected directory structure
 ![image](https://github.com/user-attachments/assets/7f97bd32-ac7b-4727-b5e7-0bc3e7009179)
 
-For obvious security reasons, any credentials, API keys, passwords,etc., must be saved locally in various ways / files and ignored by git. Publicly stored credentials will lead you directly to a failure of the project.
+"For obvious security reasons, all credentials—such as API keys, passwords, and similar sensitive data—must be stored locally using appropriate methods or files, and excluded from Git tracking. Exposing credentials publicly will almost certainly fail the project."
 
-You can store your variables (as a domain name) in an environment variable file like .env
+You can store your variables (as a domain name) in an environment variable file, like .env
 
 ### Bonus Part
 
@@ -64,7 +63,7 @@ Bonus list:
 
 • Set up an FTP server container pointing to the volume of your WordPress website.
 
-• Create a simple static website in the language of your choice except PHP (Yes, PHP is excluded!). For example, a showcase site or a site for presenting your resume.
+• Create a simple static website in the language of your choice, except PHP (Yes, PHP is excluded!). For example, a showcase site or a site for presenting your resume.
 
 • Set up Adminer (DBMS).
 
@@ -73,21 +72,21 @@ Bonus list:
 A Dockerfile must be written for each extra service. Thus, each service will run inside its container and will have, if necessary, its dedicated volume.
 
 ### Virtual Machine
-I use Virtual box.
+I use VirtualBox.
 
-VirtualBox from Oracle is a free and open-source virtualization software package that allows me to run multiple Alpine Linux, as guest operating systems, on my linux Ubuntu host operating system.
+Oracle's VirtualBox is a free and open-source virtualization software that allows me to run multiple Alpine Linux instances as guest operating systems on my Ubuntu Linux host."
 
 Two considerations:
-+ Network configuration:Bridge. I want the virtual machine gets a IP in the same net that my host Machine
-+ **check this** Shared folder: I prefer edit all configuration files outside the virtual machine. I work on a folder in the host machine that it is automatically mounted in the virtual machine at boot time (edited /etc/fstab)
-+ Shared folder secrets: I will define txt files with passwords outside
++ Network configuration: Bridge. I want the virtual machine to get an IP in the same network as my host Machine
++ **check this** Shared folder: I prefer to edit all configuration files outside the virtual machine. I work on a folder in the host machine that is automatically mounted in the virtual machine at boot time (edited /etc/fstab)
++ Shared folder secrets: I will define text files with passwords outside
 
 
 
 ### Alpine config
 I have chosen Alpine Linux due to its small size. We have 35 GB in two folders in 42. One folder in our login with 5 GB. 30 GB in a shared disk where, from time to time, the administrator frees the space of big users....
 
-Also, because I know myself and I know that I will made many mistakes requiring rebooting the virtual machine. I did not want getting older watching rebooting screens. You know what i mean....
+Also, because I know myself and I know that I will made many mistakes requiring rebooting the virtual machine. I did not want to get older watching screens rebooting. You know what I mean....
 
 There is a version optimized for virtual systems. Alpine virtual with 66 MB. [alpine-virt-3.21.3-x86_64.iso](https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-virt-3.21.3-x86_64.iso)
 
@@ -104,19 +103,19 @@ $ eval "$(ssh-agent -s)"
 > Agent pid 59566
 ssh-add ~/.ssh/id_ed25519
 
-I configured a github repository to backup all configuration files.
+I configured a GitHub repository to back up all configuration files.
 
 apk add docker            // I installed version 27.3
 apk add docker-compose    // I installed version 2.31
 docker swarn init 
 
-Subject request me to write a Makefile, so i need make
+Subject requests me to write a Makefile, so I need make
 
 apk add make
 
-##### ssh-agent start at boot time
-In previous section, i started ssh-agent manually to add the private key to connect wiht Git Hub.
-I need ssh-agent to be active for "luicasad" user. I configure inception project wiht this user. I syncronize inception repository from Git Hub.
+##### ssh-agent starts at boot time
+In the previous section, I started the ssh-agent manually to add the private key to connect with Git Hub.
+I need the SSH agent to be active for the "luicasad" user. I configure the inception project with this user. I synchronize the inception repository from Git Hub.
 I created a ~/.profile file to execute at login time
 
 ```ash
@@ -131,7 +130,7 @@ ssh-add ~/.ssh/alpine_inception
 ######
 
 ### docker compose
-Uses a docker-compose.yml file to configure my microservices ecosystem. I need to use version 3.8 of configuration syntax accordingly with m version of docker and docker compose
+Uses a docker-compose.yml file to configure my microservices ecosystem. I need to use version 3.8 of the configuration syntax accordingly to my version of Docker and docker compose
 
 Inception requires the configuration of 3 services
 + nginx
@@ -139,7 +138,7 @@ Inception requires the configuration of 3 services
 + mariadb
 + redis cache (bonus)
 + ftp server (bonus)
-+ statis web (bonus)
++ static web (bonus)
 + adminer (bonus)
 
  ```yml
