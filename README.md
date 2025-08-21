@@ -114,11 +114,11 @@ Subject requests me to write a Makefile, so I need make
 apk add make
 
 ##### ssh-agent starts at boot time
-In the previous section, I started the ssh-agent manually to add the private key to connect with Git Hub.
+In the previous section, I manually started the SSH agent to add the private key for connecting with Git Hub.
 I need the SSH agent to be active for the "luicasad" user. I configure the inception project with this user. I synchronize the inception repository from Git Hub.
 I created a ~/.profile file to execute at login time
 
-```ash
+```bash
 echo "Logged in as: $(whoami)"
 echo "Hostname    : $(hostname)"
 echo "kernel      : $(uname -r)"
@@ -127,10 +127,9 @@ ssh-add ~/.ssh/alpine_inception
 
 ```
 
-######
 
 ### docker compose
-Uses a docker-compose.yml file to configure my microservices ecosystem. I need to use version 3.8 of the configuration syntax accordingly to my version of Docker and docker compose
+Uses a docker-compose.yml file to configure my microservices ecosystem. I need to use version 3.8 of the configuration syntax accordingly to my version of Docker and Docker Compose
 
 Inception requires the configuration of 3 services
 + nginx
@@ -153,7 +152,7 @@ services:
       - "8080:80"
  ```
 
-##### real time file update inside your container when you edit it in host.
+##### real-time file update inside your container when you edit it on the host.
 
 There is a `watch` instruction in compose language to update a file inside a container
 
@@ -164,6 +163,37 @@ There is a `watch` instruction in compose language to update a file inside a con
           path: .
           target: /code
 ```
+
+####
+
+This project relies on two scripts that run during the virtual machine's boot time.
+
+Behind the scenes, once an IP number is available, the /etc/hosts file is configured, SSL certificates are generated in /home/luicasad/data/certs, and two folders are created in /home/luicasad/data to host the volumes that ensure data persistence for the database (db) and WordPress (wp).
+
+Passwords stored on the host machine are transferred to the virtual machine via VirtualBox’s shared folder functionality. These are mounted at /home/luicasad/secrets.
+
+Docker Swarm converts them into secrets via the scripts/secrets_setup.start script.
+
+The docker-compose.yml file defines the project name, includes the Docker Compose files for each service, and sets up a network with 16 possible IPs, assigning a fixed IP to each container. It also defines the volumes for persistence and the secrets.
+
+Each service has its own Dockerfile and configuration script.
+
+It’s necessary to analyze which users are created in each container during software installation and what type they are.
+
+When installing MariaDB, a mysql user is created with a low UID-GID and no login shell. In my case, that UID coincides with the UID of klogd on the virtual machine, which has led to permission conflicts.
+
+I’ve decided that MariaDB should not run as root.
+
+To prepare for potentially needing to recreate the virtual machine, there’s a script for that: scripts/inception_alpine_setup.sh.
+
+
+### Learnings.
+
+I learnt a lot in the different subjects this project treats
+
+[Alpine Linux](learnings/Alpine_linux_learnings.md)
+
+
 
 #### URLs read
 + [Alpine Linux setup](https://wiki.alpinelinux.org/wiki/Installation#Installation_Handbook)
