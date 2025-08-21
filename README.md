@@ -191,14 +191,14 @@ To prepare for potentially needing to recreate the virtual machine, there’s a 
 
 I learnt a lot in the different subjects this project treats.
 
-[Alpine Linux](learnings/Alpine_linux_learnings.md)
-[Docker](learnings/Docker_learnings.md)
-[Git](learnings/Git_learnings.md)
-[MariaDB](learnings/Mariadb_learnings.md)
-[PHP_FPM](learnings/PHP_FPM_learnings.md)
-[VirtualBox](learnings/VirtualBox_learnings.md)
-[Wordpress](learnings/Wordpress_learnings.md)
-[Nginx](learnings/nginx_learnings.md)
++ [Alpine Linux](learnings/Alpine_linux_learnings.md)
++ [Docker](learnings/Docker_learnings.md)
++ [Git](learnings/Git_learnings.md)
++ [MariaDB](learnings/Mariadb_learnings.md)
++ [PHP_FPM](learnings/PHP_FPM_learnings.md)
++ [VirtualBox](learnings/VirtualBox_learnings.md)
++ [Wordpress](learnings/Wordpress_learnings.md)
++ [Nginx](learnings/nginx_learnings.md)
 
 
 
